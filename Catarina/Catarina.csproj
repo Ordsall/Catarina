@@ -222,5 +222,19 @@
     <Resource Include="Resources\if_forward_28385.png" />
     <Resource Include="Resources\if_go-first_28399.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Devices\Olvia.Devices.Octopus\Octopus.vbproj">
+      <Project>{3bfc9a8c-8d22-4675-b2f8-d57a943ca490}</Project>
+      <Name>Octopus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Devices\Olvia.Devices.Pheasant\Pheasant.vbproj">
+      <Project>{677af086-3015-42c0-9b47-f2a8d414bb19}</Project>
+      <Name>Pheasant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Devices\Olvia.Devices.Sapsan3\Sapsan3.vbproj">
+      <Project>{26ca6fcc-df37-49be-bb16-628d783885a9}</Project>
+      <Name>Sapsan3</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
