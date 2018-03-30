@@ -205,20 +205,6 @@
     <Resource Include="Resources\Thermometer-icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Backup\Проекты_разобрать\Olvia.Devices\Olvia.Devices.Octopus\Octopus.vbproj">
-      <Project>{3bfc9a8c-8d22-4675-b2f8-d57a943ca490}</Project>
-      <Name>Octopus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Backup\Проекты_разобрать\Olvia.Devices\Olvia.Devices.Pheasant\Pheasant.vbproj">
-      <Project>{677af086-3015-42c0-9b47-f2a8d414bb19}</Project>
-      <Name>Pheasant</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Backup\Проекты_разобрать\Olvia.Devices\Olvia.Devices.Sapsan3\Sapsan3.vbproj">
-      <Project>{26ca6fcc-df37-49be-bb16-628d783885a9}</Project>
-      <Name>Sapsan3</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\hot-icon.png" />
   </ItemGroup>
   <ItemGroup>
