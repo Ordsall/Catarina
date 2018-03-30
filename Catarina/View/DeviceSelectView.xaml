@@ -1,0 +1,16 @@
+﻿<w:WizardPage x:Class="Catarina.View.DeviceSelectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:w="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:local="clr-namespace:Catarina.View"
+             xmlns:vm="clr-namespace:Catarina.ViewModel"
+             mc:Ignorable="d" 
+             CanHelp="False" HelpButtonVisibility="Hidden" PageType="Interior" 
+            Title="Настройка типа подключаемого устройства" Description="Выберете тип подключаемого устройства из доступных ниже"
+            CanSelectNextPage="False" >
+    <Grid>
+        <ListBox x:Name="lb_DeviceTypeSelect" ItemsSource="{Binding Source={x:Static vm:Instance.Devices}}" DisplayMemberPath="Type" SelectionChanged="lb_DeviceTypeSelect_SelectionChanged" />
+    </Grid>
+</w:WizardPage>

@@ -1,0 +1,24 @@
+﻿<Window x:Class="Catarina.View.ExperimentAddMaster"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:w="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:Catarina.View"
+        mc:Ignorable="d"
+        Height="450" Width="550"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Title="Мастер создания теста" Icon="/Catarina;component/Resources/device_add.png" >
+    <Grid>
+        <w:Wizard x:Name="MWizard"  FinishButtonClosesWindow="True" CancelButtonVisibility="Visible" TextOptions.TextFormattingMode="Display"
+                  HelpButtonContent="Справка" NextButtonContent="Далее" BackButtonContent="Назад" FinishButtonContent="Готово" CancelButtonContent="Отмена" >
+            <w:WizardPage CanHelp="False" HelpButtonVisibility="Hidden"
+                Title="Добро пожаловать в мастер создания нового теста" Description="Мастер поможет вам создать новый, настроить его и добавить в текущую конфигурацию." />
+            <local:DeviceSelectView x:Name="wpg_DeviceTypeSelect"/>
+            <w:WizardPage PageType="Interior" CanFinish="True" CanSelectPreviousPage="False" CanCancel="False" CanHelp="False" HelpButtonVisibility="Hidden"
+                          Title="Тест успешно создан"
+                          Description="Создание теста закончено"
+                          />
+        </w:Wizard>
+    </Grid>
+</Window>
