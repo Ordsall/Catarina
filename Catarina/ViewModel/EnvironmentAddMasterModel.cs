@@ -29,7 +29,7 @@ namespace Catarina.ViewModel
         [Description("Встречное")]
         Income = 0,
         [Description("Попутное")]
-        Outcome = 1
+        Outcome = 1 
     }
 
     
