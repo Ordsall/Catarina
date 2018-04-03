@@ -7,8 +7,11 @@ job:
   - echo "Restoring NuGet Packages..."
   - '"c:\nuget\nuget.exe" restore "Catarina.sln"'
   - ''
-  - echo "Debug build..."
+  - echo "Release build..."
   - '"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\msbuild.exe" /consoleloggerparameters:ErrorsOnly /maxcpucount /nologo /property:Configuration=Release /verbosity:quiet "Catarina.sln" /p:DebugSymbols=false /p:DebugType=None /p:AllowedReferenceRelatedFileExtensions=none'
+  - ''
+  - echo "Comperss..."
+  - '"C:\GitLab-Runner\utils\comperss-zip.bat" Catarina 1.0.21'
   tags: 
   - C#
   - Windows
