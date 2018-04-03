@@ -8,7 +8,7 @@ job:
   - '"c:\nuget\nuget.exe" restore "Catarina.sln"'
   - ''
   - echo "Debug build..."
-  - C:\Windows\Microsoft.NET\Framework64\v4.0.30319\msbuild.exe /consoleloggerparameters:ErrorsOnly /maxcpucount /nologo /property:Configuration=Debug /verbosity:quiet "Catarina.sln"
+  - "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\msbuild.exe" "Catarina.sln"
   tags: 
   except:
   - tags
