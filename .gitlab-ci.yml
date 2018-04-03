@@ -3,6 +3,11 @@ stages:
 
 job:
   stage: build
+
+  variables:
+    CI_SHORT_COMMIT_SHA: '$${CI_COMMIT_SHA:0:8}'
+
+
   script:
   - echo "Restoring NuGet Packages..."
   - '"c:\nuget\nuget.exe" restore "Catarina.sln"'
@@ -11,7 +16,7 @@ job:
   - '"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\msbuild.exe" /consoleloggerparameters:ErrorsOnly /maxcpucount /nologo /property:Configuration=Release /verbosity:quiet "Catarina.sln" /p:DebugSymbols=false /p:DebugType=None /p:AllowedReferenceRelatedFileExtensions=none'
   - ''
   - echo "Comperss... $CI_COMMIT_SHA"
-  - '"C:\GitLab-Runner\utils\comperss-zip.bat" Catarina $CI_COMMIT_SHA'
+  - '"C:\GitLab-Runner\utils\comperss-zip.bat" Catarina ${CI_SHORT_COMMIT_SHA}'
   tags: 
   - C#
   - Windows
