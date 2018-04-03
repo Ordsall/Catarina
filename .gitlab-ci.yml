@@ -23,7 +23,7 @@ publish:
 
 
   script:
-    - echo "Comperss..."
+    - echo "Comperss...%CI_COMMIT_SHA%"
     - '"D:\GitLab-Runner\scripts\packaging_zip.bat" ./Catarina/bin/Release/* build.zip'
   tags: 
     - C#
