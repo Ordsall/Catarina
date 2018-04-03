@@ -18,6 +18,10 @@ build:
 publish:
   stage: publish
 
+  variables:
+    GIT_STRATEGY: none
+
+
   script:
     - echo "Comperss..."
     - '"C:\GitLab-Runner\utils\comperss-zip.bat" Catarina'
