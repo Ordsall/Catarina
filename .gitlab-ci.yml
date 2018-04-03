@@ -24,7 +24,7 @@ publish:
 
   script:
     - echo "Comperss..."
-    - '"C:\GitLab-Runner\utils\comperss-zip.bat" Catarina'
+    - '"D:\GitLab-Runner\scripts\packaging_zip.bat" ./Catarina/bin/Release/* build.zip'
   tags: 
     - C#
     - Windows
