@@ -28,5 +28,11 @@ publish:
   tags: 
     - C#
     - Windows
+
+  artifacts:
+    paths:
+    - build.zip
+    expire_in: 1 week
+
   dependencies:
     - build
