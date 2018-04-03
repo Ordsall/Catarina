@@ -24,10 +24,10 @@ publish:
 
   script:
     - echo "Comperss..."
-    - '"D:\GitLab-Runner\scripts\packaging_zip.bat" ./Catarina/bin/Release/* build.zip'
+    - 'cmd /Q /C "D:\GitLab-Runner\scripts\packaging_zip.cmd" ./Catarina/bin/Release/* build.zip'
     - ''
     - echo "Publishing..."
-    - '"D:\GitLab-Runner\scripts\publish_ftp.bat" ./build.zip Catarina/%CI_COMMIT_REF_NAME%/'
+    - 'cmd /Q /C "D:\GitLab-Runner\scripts\publish_ftp.cmd" ./build.zip Catarina/%CI_COMMIT_REF_NAME%/'
   tags: 
     - C#
     - Windows
