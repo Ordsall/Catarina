@@ -8,7 +8,7 @@ job:
   - '"c:\nuget\nuget.exe" restore "Catarina.sln"'
   - ''
   - echo "Debug build..."
-  - "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\msbuild.exe" "Catarina.sln"
+  - '"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\msbuild.exe" "Catarina.sln"'
   tags: 
   except:
   - tags
