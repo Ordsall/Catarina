@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,15 +8,20 @@ using System.Threading.Tasks;
 
 namespace Catarina.ViewModel
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class EnvironmentModel : ViewModelBase
     {
-        public ObservableCollection<Interfaces.IDeviceBuilder> DeviceTypes { get; set; } = new ObservableCollection<Interfaces.IDeviceBuilder>();
-
-        public Interfaces.IImitatorBuilder Imitator { get; set; } = new Devices.Sapsan3Builder();
-
+        [JsonProperty("Title")]
         public string Title => String.Format("Камера {0}", Number);
 
+        [JsonProperty("Number")]
         public int Number { get; set; } = 1;
+
+        [JsonProperty("Devices")]
+        public ObservableCollection<Interfaces.IDeviceBuilder> DeviceTypes { get; set; } = new ObservableCollection<Interfaces.IDeviceBuilder>();
+
+        [JsonProperty("Imitator")]
+        public Interfaces.IImitatorBuilder Imitator { get; set; } = new Devices.Sapsan3Builder();
 
         public string DevicesIncludedToString
         {

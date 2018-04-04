@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Catarina.ViewModel
 {
     static public class Instance
     {
+        static JsonSerializer serializer = new JsonSerializer();
 
         static Instance()
         {
@@ -20,11 +22,27 @@ namespace Catarina.ViewModel
             Imitators.Add(new Devices.Sapsan3Builder());
         
             Environments.Add(new EnvironmentModel());
+
+            if(System.IO.File.Exists(@".\Environment.json"))
+            {
+                string json = System.IO.File.ReadAllText(@".\Environment.json");
+                //var s = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<ViewModel.EnvironmentModel>>(json);
+            }
+
+            Environments.CollectionChanged += Environments_CollectionChanged;
+        }
+
+        private static void Environments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(sender, Formatting.Indented);
+            System.IO.File.WriteAllText(@".\Environment.json", json);
         }
 
         public static ObservableCollection<Interfaces.IDeviceBuilder> Devices { get; set; } = new ObservableCollection<Interfaces.IDeviceBuilder>();
 
         public static ObservableCollection<Interfaces.IImitatorBuilder> Imitators { get; set; } = new ObservableCollection<Interfaces.IImitatorBuilder>();
+
+
 
         public static ObservableCollection<ViewModel.EnvironmentModel> Environments { get; set; } = new ObservableCollection<EnvironmentModel>();
 
