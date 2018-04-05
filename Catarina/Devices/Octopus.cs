@@ -19,19 +19,19 @@ namespace Catarina.Devices
 
         public IRadarModule Build()
         {
-            var p = new Octopus();
+            var p = new Octopus(this);
             p.PortName = PortName;
             p.BaudRate = BaudRate;
-            p.Type = Type;
             return p;
         }
     }
 
     class Octopus : Interfaces.IRadarModule, ISerialDevice
     {
+        public Octopus(OctopusBuilder builder) => DeviceType = builder;
         public string Serial => "0000";
-
-        public string Type { get; set; } = "ДТ Осьминог";
+        public OctopusBuilder DeviceType { get; private set; }
+        public string Type => DeviceType.Type;
 
         public string PortName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

@@ -12,7 +12,7 @@ namespace Catarina.Interfaces
 
         string Serial { get; }
 
-        string Type { get; set; }
+        string Type { get; }
 
 
     }
