@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catarina.Interfaces;
+using Newtonsoft.Json;
 
 namespace Catarina.Devices
 {
-    public class Sapsan3Builder : Interfaces.IImitatorBuilder, ISerialDeviceBuilder
+    [JsonObject(MemberSerialization.OptIn)]
+    public class Sapsan3Factory : Interfaces.IImitatorFactory, ISerialDeviceFactory
     {
         public string Type => "Сапсан 3";
 
+        [JsonProperty()]
         public string PortName { get; set; }
-
-        public uint BaudRate { set; get; }
 
         public string InfoString => this.ToString();
 

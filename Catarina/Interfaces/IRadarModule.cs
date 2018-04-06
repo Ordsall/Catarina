@@ -8,7 +8,8 @@ namespace Catarina.Interfaces
 {
     public interface IRadarModule
     {
-        void GetData();
+ 
+        Dictionary<string, object> GetData();
 
         string Serial { get; }
 

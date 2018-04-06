@@ -46,10 +46,10 @@ namespace Catarina.ViewModel
 
         public string SelectesImitatorPort
         {
-            get => (AvaibleImitatorsSelectedItem as Interfaces.ISerialDeviceBuilder).PortName;
+            get => (AvaibleImitatorsSelectedItem as Interfaces.ISerialDeviceFactory).PortName;
             set
             {               
-                (AvaibleImitatorsSelectedItem as Interfaces.ISerialDeviceBuilder).PortName = value;
+                (AvaibleImitatorsSelectedItem as Interfaces.ISerialDeviceFactory).PortName = value;
                 OnPropertyChanged(nameof(SelectesImitatorPort));
 
                 IsImitatorSelectedComplete = Environment.Imitator != null && SelectesImitatorPort != null;
@@ -96,11 +96,11 @@ namespace Catarina.ViewModel
 
         public bool IsMasterFinished { get; set; } = false;
 
-        public ObservableCollection<Interfaces.IImitatorBuilder> AvaibleImitators { get; set; } = new ObservableCollection<Interfaces.IImitatorBuilder>();
+        public ObservableCollection<Interfaces.IImitatorFactory> AvaibleImitators { get; set; } = new ObservableCollection<Interfaces.IImitatorFactory>();
 
-        //private Interfaces.IImitatorBuilder _avaibleImitatorsSelectedItem = null;
+        //private Interfaces.IImitatorFactory _avaibleImitatorsSelectedItem = null;
 
-        public Interfaces.IImitatorBuilder AvaibleImitatorsSelectedItem
+        public Interfaces.IImitatorFactory AvaibleImitatorsSelectedItem
         {
             get => Environment.Imitator;
             set {
@@ -119,9 +119,9 @@ namespace Catarina.ViewModel
 
         public Direction ImitationDirection { get; set; } = Direction.Income;
 
-        public ObservableCollection<Interfaces.IDeviceBuilder> AvalibleDevices { get; set; } = new ObservableCollection<Interfaces.IDeviceBuilder>();
+        public ObservableCollection<Interfaces.IDeviceFactory> AvalibleDevices { get; set; } = new ObservableCollection<Interfaces.IDeviceFactory>();
 
-        public ObservableCollection<Interfaces.IDeviceBuilder> SelectedDevices
+        public ObservableCollection<Interfaces.IDeviceFactory> SelectedDevices
         {
             get => Environment.DeviceTypes;
             set { Environment.DeviceTypes = value; }
@@ -129,11 +129,11 @@ namespace Catarina.ViewModel
 
         public EnvironmentModel Environment { get; set; } = null;
 
-        private Interfaces.IDeviceBuilder _selectedDevicesSelectedItem = null;
+        private Interfaces.IDeviceFactory _selectedDevicesSelectedItem = null;
 
-        private Interfaces.IDeviceBuilder _avalibleDevicesSelectedItem = null;
+        private Interfaces.IDeviceFactory _avalibleDevicesSelectedItem = null;
 
-        public Interfaces.IDeviceBuilder SelectedDevicesSelectedItem
+        public Interfaces.IDeviceFactory SelectedDevicesSelectedItem
         {
             get => _selectedDevicesSelectedItem;
             set {
@@ -146,7 +146,7 @@ namespace Catarina.ViewModel
             }
         } 
 
-        public Interfaces.IDeviceBuilder AvalibleDevicesSelectedItem
+        public Interfaces.IDeviceFactory AvalibleDevicesSelectedItem
         {
             get => _avalibleDevicesSelectedItem;
             set {
@@ -173,7 +173,7 @@ namespace Catarina.ViewModel
 
         public bool IsImitatorSelectedComplete { get; set; } = false;
 
-        public EnvironmentAddMasterModel(IEnumerable<Interfaces.IDeviceBuilder> Devices, EnvironmentModel NewEnvironment, IEnumerable<Interfaces.IImitatorBuilder> Imitators)
+        public EnvironmentAddMasterModel(IEnumerable<Interfaces.IDeviceFactory> Devices, EnvironmentModel NewEnvironment, IEnumerable<Interfaces.IImitatorFactory> Imitators)
         {
             Environment = NewEnvironment;
 

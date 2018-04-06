@@ -4,77 +4,75 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catarina.Interfaces;
+using Newtonsoft.Json;
 
 namespace Catarina.Devices
 {
-
-    class BPhasantBuilder : Interfaces.IDeviceBuilder, Interfaces.ISerialDeviceBuilder
+    [JsonObject(MemberSerialization.OptIn)]
+    class BPhasantFactory : Interfaces.IDeviceFactory, Interfaces.ISerialDeviceFactory
     {
-        public string Type => "БМ Фазан";
+        public override string Type => "БМ Фазан";
 
-        public IRadarModule Build()
+        [JsonProperty()]
+        public string PortName { get; set; }
+
+        public override string DeviceInfo => String.Format("{0} ({1})", Type, PortName);
+
+        public override IRadarModule Build()
         {
-            var p = new Phasant();
-            p.PortName = PortName;
-            p.BaudRate = BaudRate;
-            p.Type = Type;
+            var p = new Phasant(this);
             return p;
         }
 
-        public string PortName { get; set; }
-
-        public uint BaudRate { get; set; }
-
-        public string SettingsStirng => PortName;
     }
 
-    class BOctopustBuilder : Interfaces.IDeviceBuilder, Interfaces.ISerialDeviceBuilder
+    [JsonObject(MemberSerialization.OptIn)]
+    class BOctopustFactory : Interfaces.IDeviceFactory, Interfaces.ISerialDeviceFactory
     {
-        public string Type => "БМ Осьминог";
+        public override string Type => "БМ Осьминог";
 
-        public IRadarModule Build()
-        {
-            var p = new Phasant();
-            p.PortName = PortName;
-            p.BaudRate = BaudRate;
-            p.Type = Type;
-            return p;
-        }
-
+        [JsonProperty()]
         public string PortName { get; set; }
 
-        public uint BaudRate { get; set; }
+        public override string DeviceInfo => String.Format("{0} ({1})", Type, PortName);
 
-        public string SettingsStirng => PortName;
+        public override IRadarModule Build()
+        {
+            var p = new Phasant(this);
+            return p;
+        }
     }
 
-    class BOctopusMBuilder : Interfaces.IDeviceBuilder, Interfaces.ISerialDeviceBuilder
+    [JsonObject(MemberSerialization.OptIn)]
+    class BOctopusMFactory : Interfaces.IDeviceFactory, Interfaces.ISerialDeviceFactory
     {
-        public string Type => "БМ Осьминог-M";
+        public override string Type => "БМ Осьминог-М";
 
-        public IRadarModule Build()
-        {
-            var p = new Phasant();
-            p.PortName = PortName;
-            p.BaudRate = BaudRate;
-            p.Type = Type;
-            return p;
-        }
-
+        [JsonProperty()]
         public string PortName { get; set; }
 
-        public uint BaudRate { get; set; }
+        public override string DeviceInfo => String.Format("{0} ({1})", Type, PortName);
 
-        public string SettingsStirng => PortName;
+        public override IRadarModule Build()
+        {
+            var p = new Phasant(this);
+            return p;
+        }
     }
 
     public class Phasant : Interfaces.ISerialDevice, IRadarModule
     {
+
+        public Interfaces.IDeviceFactory DeviceFactory { get; private set; }
+
+        public Phasant(Interfaces.IDeviceFactory Factory)
+        {
+            DeviceFactory = Factory;
+        }
+
         Olvia.Devices.pheasant.Device _dev = new Olvia.Devices.pheasant.Device();
 
         public string PortName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public uint BaudRate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string Serial => "00000";
 
@@ -85,12 +83,7 @@ namespace Catarina.Devices
             throw new NotImplementedException();
         }
 
-        public void Connect(string PortName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetData()
+        public Dictionary<string, object> GetData()
         {
             throw new NotImplementedException();
         }

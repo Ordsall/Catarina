@@ -49,5 +49,11 @@ namespace Catarina.View
         {
             ViewModel.Instance.Environments.Remove(lb_Envs.SelectedItem as ViewModel.EnvironmentModel);
         }
+
+        private void bt_Save_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Instance.SaveSettings();
+            this.Close();
+        }
     }
 }

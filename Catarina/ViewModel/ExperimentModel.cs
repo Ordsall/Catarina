@@ -12,7 +12,7 @@ namespace Catarina.ViewModel
 
         public string Serial => Device.Serial;
 
-        public Interfaces.IRadarModule Device { get; set; } = new Devices.Phasant();
+        public Interfaces.IRadarModule Device { get; set; }
 
         
     }

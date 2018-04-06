@@ -6,21 +6,15 @@ using System.Threading.Tasks;
 
 namespace Catarina.Interfaces
 {
-    public interface ISerialDeviceBuilder
+    public interface ISerialDeviceFactory
     {
         string PortName { get; set; }
-
-        uint BaudRate { get; set; }
     }
 
     public interface ISerialDevice 
     {
-        string PortName { get; set; }
-
-        uint BaudRate { get; set; }
+        string PortName { get; }
 
         void Connect();
-
-        void Connect(string PortName);
     }
 }

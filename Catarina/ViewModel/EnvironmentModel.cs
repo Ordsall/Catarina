@@ -11,17 +11,17 @@ namespace Catarina.ViewModel
     [JsonObject(MemberSerialization.OptIn)]
     public class EnvironmentModel : ViewModelBase
     {
-        [JsonProperty("Title")]
+        [JsonProperty()]
         public string Title => String.Format("Камера {0}", Number);
 
-        [JsonProperty("Number")]
+        [JsonProperty()]
         public int Number { get; set; } = 1;
 
-        [JsonProperty("Devices")]
-        public ObservableCollection<Interfaces.IDeviceBuilder> DeviceTypes { get; set; } = new ObservableCollection<Interfaces.IDeviceBuilder>();
+        [JsonProperty()]
+        public ObservableCollection<Interfaces.IDeviceFactory> DeviceTypes { get; set; } = new ObservableCollection<Interfaces.IDeviceFactory>();
 
-        [JsonProperty("Imitator")]
-        public Interfaces.IImitatorBuilder Imitator { get; set; } = new Devices.Sapsan3Builder();
+        [JsonProperty()]
+        public Interfaces.IImitatorFactory Imitator { get; set; } = new Devices.Sapsan3Factory();
 
         public string DevicesIncludedToString
         {
@@ -30,7 +30,7 @@ namespace Catarina.ViewModel
                 if (DeviceTypes.Count > 0)
                 {
                     string DevNames = "";
-                    foreach (var Dev in DeviceTypes) { DevNames += String.Format("{0} ({1}), ", Dev.Type, Dev.SettingsStirng); }
+                    foreach (var Dev in DeviceTypes) { DevNames += Dev.DeviceInfo + ", "; }
                     if (DevNames.Length > 2) {DevNames = DevNames.Remove(DevNames.Length - 2); }
                     return DevNames;
                 }

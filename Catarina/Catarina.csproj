@@ -80,9 +80,9 @@
     <Compile Include="Devices\Octopus.cs" />
     <Compile Include="Devices\Phasant.cs" />
     <Compile Include="Devices\Sapsan3.cs" />
-    <Compile Include="Interfaces\IDeviceBuilder.cs" />
+    <Compile Include="Interfaces\IDeviceFactory.cs" />
     <Compile Include="Interfaces\IImitator.cs" />
-    <Compile Include="Interfaces\IImitatorBuilder.cs" />
+    <Compile Include="Interfaces\IImitatorFactory.cs" />
     <Compile Include="Interfaces\IRadarModule.cs" />
     <Compile Include="Interfaces\ISerialDevice.cs" />
     <Compile Include="Interfaces\ISetupModel.cs" />

@@ -27,7 +27,7 @@
                     <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
                         <TextBlock Text="{Binding Path=Title, FallbackValue=Камера 1}" />
                     </StackPanel>
-                    <AccessText Text="{Binding Path=DevicesIncludedToString, FallbackValue=Не определено}" TextWrapping="Wrap" MaxWidth="380" />
+                    <AccessText Text="{Binding Path=DevicesIncludedToString, FallbackValue=Не определено}" TextWrapping="Wrap" MaxWidth="350" />
                     <TextBlock Text="{Binding Path=Imitator.InfoString, FallbackValue=Не определено}"/>
                 </StackPanel>
             </Grid>
@@ -40,7 +40,7 @@
             <RowDefinition Height="34"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="bt_Save" Content="Сохранить" Width="80" Margin="5" Padding="0" Height="20"/>
+            <Button x:Name="bt_Save" Content="Сохранить" Width="80" Margin="5" Padding="0" Height="20" Click="bt_Save_Click"/>
             <Button x:Name="bt_Cancel" Content="Отмена" Width="80" Margin="5" Padding="0" Height="20" Click="bt_Cancel_Click"/>
         </StackPanel>
         <Border Grid.Row="1" BorderThickness="0,1" BorderBrush="Gray"/>

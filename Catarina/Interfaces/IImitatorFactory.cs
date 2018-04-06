@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Catarina.Interfaces
 {
-    public interface IDeviceBuilder
+    public interface IImitatorFactory
     {
-        IRadarModule Build();
+        IImitator Build();
 
         string Type { get; }
 
-        string SettingsStirng { get; }
+        string InfoString { get; }
     }
 }

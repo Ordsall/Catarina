@@ -11,9 +11,9 @@ namespace Catarina.ViewModel
     {
         public string Header { get; set; } = null;
 
-        public Interfaces.ISerialDeviceBuilder Device { get; }
+        public Interfaces.ISerialDeviceFactory Device { get; }
 
-        public SerialDeviceSetupModel(Interfaces.ISerialDeviceBuilder device , string header)
+        public SerialDeviceSetupModel(Interfaces.ISerialDeviceFactory device , string header)
         {
             Device = device;
             Header = header;
@@ -28,11 +28,6 @@ namespace Catarina.ViewModel
         public ObservableCollection<string> AvaibleSerialPortList { get; set; } = 
             new ObservableCollection<string>(System.IO.Ports.SerialPort.GetPortNames().ToList<string>());
 
-        public uint BaudRateSelected
-        {
-            get => Device.BaudRate;
-            set { Device.BaudRate = value; OnPropertyChanged(nameof(BaudRateSelected)); }
-        }
 
         public ObservableCollection<int> BaudRates = new ObservableCollection<int>()
         {

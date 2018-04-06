@@ -4,52 +4,72 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catarina.Interfaces;
+using Newtonsoft.Json;
 
 namespace Catarina.Devices
 {
-    class OctopusBuilder : Interfaces.IDeviceBuilder, Interfaces.ISerialDeviceBuilder
+    [JsonObject(MemberSerialization.OptIn)]
+    class OctopusFactory : Interfaces.IDeviceFactory, Interfaces.ISerialDeviceFactory
     {
-        public string Type => "ДТ Осьминог";
+        public override string Type => "ДТ Осьминог";
 
+        [JsonProperty()]
         public string PortName { get; set; }
 
-        public uint BaudRate { get; set; }
+        public override string DeviceInfo => String.Format("{0} ({1})", Type, PortName);
 
-        public string SettingsStirng => PortName;
-
-        public IRadarModule Build()
+        public override IRadarModule Build()
         {
             var p = new Octopus(this);
-            p.PortName = PortName;
-            p.BaudRate = BaudRate;
             return p;
         }
     }
 
     class Octopus : Interfaces.IRadarModule, ISerialDevice
     {
-        public Octopus(OctopusBuilder builder) => DeviceType = builder;
-        public string Serial => "0000";
-        public OctopusBuilder DeviceType { get; private set; }
+        public Octopus(OctopusFactory Factory)
+        {
+            DeviceType = Factory;
+            Device = new Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device();
+        }
+
+        Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device Device;
+
+        public string Serial
+        {
+            get
+            {
+                if (Device.IsConnected) return "123123123";
+                else return "Неопределено";
+            }
+        }
+
+        public OctopusFactory DeviceType { get; private set; }
+
         public string Type => DeviceType.Type;
 
-        public string PortName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public uint BaudRate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string PortName => DeviceType.PortName;
 
         public void Connect()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var b = Device.Connect(DeviceType.PortName);
+                if (!b) { throw new Exception("Невозможно подключится к устройству"); }
+            }
+            catch (Exception ex) { throw ex; }
+
         }
 
-        public void Connect(string PortName)
+        Dictionary<string, object> IRadarModule.GetData()
         {
-            throw new NotImplementedException();
-        }
-
-        public void GetData()
-        {
-            throw new NotImplementedException();
+            if (Device.IsConnected)
+            {
+                var d = new Dictionary<string, object>();
+                
+                return d;
+            }
+            else throw new Exception("Невозможно подключится к устройству");
         }
     }
 }

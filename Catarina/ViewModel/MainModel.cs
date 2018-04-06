@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,32 +16,42 @@ namespace Catarina.ViewModel
 
         static Instance()
         {
-            Devices.Add(new Devices.OctopusBuilder());
-            Devices.Add(new Devices.BPhasantBuilder());
-            Devices.Add(new Devices.BOctopustBuilder());
-            Devices.Add(new Devices.BOctopusMBuilder());
-            Imitators.Add(new Devices.Sapsan3Builder());
+            Devices.Add(new Devices.OctopusFactory());
+            Devices.Add(new Devices.BPhasantFactory());
+            Devices.Add(new Devices.BOctopustFactory());
+            Devices.Add(new Devices.BOctopusMFactory());
+            Imitators.Add(new Devices.Sapsan3Factory());
         
             Environments.Add(new EnvironmentModel());
 
-            if(System.IO.File.Exists(@".\Environment.json"))
+            if(System.IO.File.Exists(@".\environment.json"))
             {
-                string json = System.IO.File.ReadAllText(@".\Environment.json");
-                //var s = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<ViewModel.EnvironmentModel>>(json);
+                string json = System.IO.File.ReadAllText(@".\environment.json");
+
+                var s = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<ViewModel.EnvironmentModel>>(json, new JsonSerializerSettings() {
+                    TypeNameHandling = TypeNameHandling.Auto });
+
+                Environments = s;
             }
 
             Environments.CollectionChanged += Environments_CollectionChanged;
         }
 
-        private static void Environments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public static void SaveSettings()
         {
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(sender, Formatting.Indented);
-            System.IO.File.WriteAllText(@".\Environment.json", json);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(Environments, Formatting.Indented, new JsonSerializerSettings() {
+                TypeNameHandling = TypeNameHandling.Auto });
+            System.IO.File.WriteAllText(@".\environment.json", json);
         }
 
-        public static ObservableCollection<Interfaces.IDeviceBuilder> Devices { get; set; } = new ObservableCollection<Interfaces.IDeviceBuilder>();
+        private static void Environments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            
+        }
 
-        public static ObservableCollection<Interfaces.IImitatorBuilder> Imitators { get; set; } = new ObservableCollection<Interfaces.IImitatorBuilder>();
+        public static ObservableCollection<Interfaces.IDeviceFactory> Devices { get; set; } = new ObservableCollection<Interfaces.IDeviceFactory>();
+
+        public static ObservableCollection<Interfaces.IImitatorFactory> Imitators { get; set; } = new ObservableCollection<Interfaces.IImitatorFactory>();
 
 
 
@@ -49,7 +60,7 @@ namespace Catarina.ViewModel
         public static MainModel InstanceModel { get; set; } = new MainModel();
     }
 
-    
+
 
     public class MainModel : ViewModelBase
     {
