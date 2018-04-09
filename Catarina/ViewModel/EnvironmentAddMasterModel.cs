@@ -46,10 +46,11 @@ namespace Catarina.ViewModel
 
         public string SelectesImitatorPort
         {
-            get => (AvaibleImitatorsSelectedItem as Interfaces.ISerialDeviceFactory).PortName;
+            //TODO Иммитатор а не устройство!
+            get => ((AvaibleImitatorsSelectedItem as Interfaces.IDeviceFactory).Settings as Interfaces.SerialSettings).PortName;
             set
-            {               
-                (AvaibleImitatorsSelectedItem as Interfaces.ISerialDeviceFactory).PortName = value;
+            {
+                ((AvaibleImitatorsSelectedItem as Interfaces.IDeviceFactory).Settings as Interfaces.SerialSettings).PortName = value;
                 OnPropertyChanged(nameof(SelectesImitatorPort));
 
                 IsImitatorSelectedComplete = Environment.Imitator != null && SelectesImitatorPort != null;

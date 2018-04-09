@@ -14,15 +14,40 @@ namespace Catarina.ViewModel
     {
         static JsonSerializer serializer = new JsonSerializer();
 
+        public static void Test()
+        {
+            Progress<string> _Progress = new Progress<string>();
+            _Progress.ProgressChanged += _Progress_ProgressChanged;
+
+
+            var v = new Devices.BOctopustFactory();
+            v.Settings = new Interfaces.SerialSettings() { PortName = "COM6" };
+            var dev = v.Build();
+            dev.Connect();
+            var ser = dev.SerialNumber;
+            var task = dev.GetData(_Progress);
+        }
+
+        private static void _Progress_ProgressChanged(object sender, string e)
+        {
+            { }
+        }
+
         static Instance()
         {
+
+
+
+
+
             Devices.Add(new Devices.OctopusFactory());
             Devices.Add(new Devices.BPhasantFactory());
             Devices.Add(new Devices.BOctopustFactory());
             Devices.Add(new Devices.BOctopusMFactory());
             Imitators.Add(new Devices.Sapsan3Factory());
-        
-            Environments.Add(new EnvironmentModel());
+
+
+            Test();
 
             if(System.IO.File.Exists(@".\environment.json"))
             {

@@ -9,11 +9,13 @@ namespace Catarina.Interfaces
 {
     public abstract class IDeviceFactory
     {
-        public abstract IRadarModule Build();
+        public abstract IDevice Build();
 
         public abstract string Type { get; }
 
         public abstract string DeviceInfo { get; }
+
+        public abstract ISettings Settings { get; set; }
 
     }
 }

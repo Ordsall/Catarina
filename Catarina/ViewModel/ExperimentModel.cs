@@ -10,9 +10,9 @@ namespace Catarina.ViewModel
     {
         public string Type => Device.Type;
 
-        public string Serial => Device.Serial;
+        public string Serial => Device.SerialNumber;
 
-        public Interfaces.IRadarModule Device { get; set; }
+        public Interfaces.IDevice Device { get; set; }
 
         
     }

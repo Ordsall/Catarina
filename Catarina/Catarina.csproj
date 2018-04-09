@@ -83,14 +83,12 @@
     <Compile Include="Interfaces\IDeviceFactory.cs" />
     <Compile Include="Interfaces\IImitator.cs" />
     <Compile Include="Interfaces\IImitatorFactory.cs" />
-    <Compile Include="Interfaces\IRadarModule.cs" />
-    <Compile Include="Interfaces\ISerialDevice.cs" />
-    <Compile Include="Interfaces\ISetupModel.cs" />
+    <Compile Include="Interfaces\IDevice.cs" />
+    <Compile Include="Interfaces\ISettings.cs" />
     <Compile Include="ViewModel\EnvironmentAddMasterModel.cs" />
     <Compile Include="ViewModel\EnvironmentModel.cs" />
     <Compile Include="ViewModel\ExperimentModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
-    <Compile Include="ViewModel\SerialDeviceSetupModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DeviceSelectView.xaml.cs">
       <DependentUpon>DeviceSelectView.xaml</DependentUpon>

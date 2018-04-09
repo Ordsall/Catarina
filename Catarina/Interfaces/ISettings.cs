@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace Catarina.Interfaces
 {
-    public interface IRadarModule
+    public interface ISettings
     {
- 
-        Dictionary<string, object> GetData();
-
-        string Serial { get; }
-
-        string Type { get; }
-
-
     }
+
+    public class SerialSettings : ISettings
+    {
+        public string PortName { get; set; }
+    }
+
 }

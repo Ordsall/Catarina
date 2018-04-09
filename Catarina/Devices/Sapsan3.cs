@@ -9,24 +9,20 @@ using Newtonsoft.Json;
 namespace Catarina.Devices
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Sapsan3Factory : Interfaces.IImitatorFactory, ISerialDeviceFactory
+    public class Sapsan3Factory : Interfaces.IImitatorFactory
     {
         public string Type => "Сапсан 3";
 
-        [JsonProperty()]
-        public string PortName { get; set; }
+        public string InfoString => "Скдыщь";
 
-        public string InfoString => this.ToString();
-
-        public IImitator Build() { return new Sapsan3(); }
-
-        public override string ToString()
+        public IImitator Build()
         {
-            return String.Format("{0} ({1})", Type, PortName);
+            throw new NotImplementedException();
         }
     }
+    
 
-    public class Sapsan3 : Interfaces.IImitator, Interfaces.ISerialDevice
+    public class Sapsan3 : Catarina.Interfaces.IImitator
     {
         public string PortName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public uint BaudRate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
