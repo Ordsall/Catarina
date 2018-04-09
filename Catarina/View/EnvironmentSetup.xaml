@@ -28,7 +28,7 @@
                         <TextBlock Text="{Binding Path=Title, FallbackValue=Камера 1}" />
                     </StackPanel>
                     <AccessText Text="{Binding Path=DevicesIncludedToString, FallbackValue=Не определено}" TextWrapping="Wrap" MaxWidth="350" />
-                    <TextBlock Text="{Binding Path=Imitator.InfoString, FallbackValue=Не определено}"/>
+                    <TextBlock Text="{Binding Path=Imitator.DeviceInfo, FallbackValue=Не определено}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>

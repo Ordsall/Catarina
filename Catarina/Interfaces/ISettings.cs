@@ -12,6 +12,8 @@ namespace Catarina.Interfaces
 
     public class SerialSettings : ISettings
     {
+        public SerialSettings(string PortName) => this.PortName = PortName;
+
         public string PortName { get; set; }
     }
 

@@ -21,7 +21,7 @@ namespace Catarina.ViewModel
         public ObservableCollection<Interfaces.IDeviceFactory> DeviceTypes { get; set; } = new ObservableCollection<Interfaces.IDeviceFactory>();
 
         [JsonProperty()]
-        public Interfaces.IImitatorFactory Imitator { get; set; } = new Devices.Sapsan3Factory();
+        public Interfaces.IImitatorFactory Imitator { get; set; } = new Devices.Sapsan3Factory(new Interfaces.SerialSettings(null));
 
         public string DevicesIncludedToString
         {

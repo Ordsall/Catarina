@@ -11,11 +11,13 @@ namespace Catarina.Devices
     [JsonObject(MemberSerialization.OptIn)]
     class OctopusFactory : Interfaces.IDeviceFactory
     {
+        public OctopusFactory(SerialSettings settings) { _settings = settings; }
+
         public override string Type => "ДТ Осьминог";
 
         public override string DeviceInfo => String.Format("{0} ({1})", Type, _settings.PortName);
 
-        public SerialSettings _settings = new SerialSettings();
+        public SerialSettings _settings = new SerialSettings(null);
 
         [JsonProperty()]
         public override ISettings Settings
@@ -37,6 +39,7 @@ namespace Catarina.Devices
 
     class Octopus : Interfaces.IDevice
     {
+
         public Octopus(OctopusFactory Factory, SerialSettings Settings)
         {
             DeviceType = Factory;

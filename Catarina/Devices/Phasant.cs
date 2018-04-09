@@ -15,7 +15,9 @@ namespace Catarina.Devices
 
         public override string DeviceInfo => String.Format("{0} ({1})", Type, _settings.PortName);
 
-        public SerialSettings _settings = new SerialSettings();
+        public SerialSettings _settings = new SerialSettings(null);
+
+        public BPhasantFactory(SerialSettings settings) { _settings = settings; }
 
         [JsonProperty()]
         public override ISettings Settings
@@ -43,7 +45,9 @@ namespace Catarina.Devices
 
         public override string DeviceInfo => String.Format("{0} ({1})", Type, _settings.PortName);
 
-        public SerialSettings _settings = new SerialSettings();
+        public SerialSettings _settings = new SerialSettings(null);
+
+        public BOctopustFactory(SerialSettings settings) { _settings = settings; }
 
         [JsonProperty()]
         public override ISettings Settings
@@ -70,7 +74,9 @@ namespace Catarina.Devices
 
         public override string DeviceInfo => String.Format("{0} ({1})", Type, _settings.PortName);
 
-        public SerialSettings _settings = new SerialSettings();
+        public SerialSettings _settings = new SerialSettings(null);
+
+        public BOctopusMFactory(SerialSettings settings) { _settings = settings; }
 
         [JsonProperty()]
         public override ISettings Settings

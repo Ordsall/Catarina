@@ -19,8 +19,8 @@ namespace Catarina.ViewModel
             Progress<string> _Progress = new Progress<string>();
             _Progress.ProgressChanged += _Progress_ProgressChanged;
 
-            var imf = new Devices.Sapsan3Factory();
-            imf.Settings = new Interfaces.SerialSettings() { PortName = "COM7" };
+            var Settings = new Interfaces.SerialSettings("COM7");
+            var imf = new Devices.Sapsan3Factory(Settings);
             var im = imf.Build();
 
             im.Connect();
@@ -29,8 +29,8 @@ namespace Catarina.ViewModel
 
             var s = im.Serial;
 
-            var v = new Devices.BOctopustFactory();
-            v.Settings = new Interfaces.SerialSettings() { PortName = "COM6" };
+            Settings = new Interfaces.SerialSettings("COM6");
+            var v = new Devices.BOctopustFactory(Settings);
             var dev = v.Build();
             dev.Connect();
             var ser = dev.SerialNumber;
@@ -50,14 +50,14 @@ namespace Catarina.ViewModel
 
 
 
-            Devices.Add(new Devices.OctopusFactory());
-            Devices.Add(new Devices.BPhasantFactory());
-            Devices.Add(new Devices.BOctopustFactory());
-            Devices.Add(new Devices.BOctopusMFactory());
-            Imitators.Add(new Devices.Sapsan3Factory());
+            Devices.Add(new Devices.OctopusFactory(new Interfaces.SerialSettings("COM6")));
+            Devices.Add(new Devices.BPhasantFactory(new Interfaces.SerialSettings("COM6")));
+            Devices.Add(new Devices.BOctopustFactory(new Interfaces.SerialSettings("COM6")));
+            Devices.Add(new Devices.BOctopusMFactory(new Interfaces.SerialSettings("COM6")));
+            Imitators.Add(new Devices.Sapsan3Factory(new Interfaces.SerialSettings("COM7")));
 
 
-            Test();
+            //Test();
 
             if(System.IO.File.Exists(@".\environment.json"))
             {

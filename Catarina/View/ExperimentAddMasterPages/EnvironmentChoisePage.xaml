@@ -1,0 +1,45 @@
+﻿<w:WizardPage x:Class="Catarina.View.ExperimentAddMasterPages.EnvironmentChoisePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Catarina.View.ExperimentAddMasterPages"
+             xmlns:vm="clr-namespace:Catarina.ViewModel"
+             xmlns:w="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:hlp="clr-namespace:Catarina.View.Helpers"
+             mc:Ignorable="d"
+             CanHelp="False" HelpButtonVisibility="Hidden" PageType="Interior" 
+             Title="Настройка тестируемых устройств" Description="Выберите необходимые устройства из доступных ниже. Впоследствии они будут доступны для тестирования в создаваемой конфигурации."
+             CanSelectNextPage="True" >
+    <w:WizardPage.Resources>
+        <DataTemplate x:Key = "mt" >
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" MaxHeight="60"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Margin="5" BorderBrush="Black" BorderThickness="1" Grid.Row="0">
+                    <Label Content="{Binding Number}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" />
+                </Border>
+
+                <StackPanel Grid.Column="1" Margin="5" Grid.Row="0" Grid.RowSpan="2">
+                    <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
+                        <TextBlock Text="{Binding Path=Title, FallbackValue=Камера 1}" />
+                    </StackPanel>
+                    <AccessText Text="{Binding Path=DevicesIncludedToString, FallbackValue=Не определено}" TextWrapping="Wrap" MaxWidth="350" />
+                    <TextBlock Text="{Binding Path=Imitator.DeviceInfo, FallbackValue=Не определено}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+    </w:WizardPage.Resources>
+    <Grid>
+        <ListBox x:Name="lb_Envs" Grid.RowSpan="1" Grid.Row="1" Margin="5" HorizontalContentAlignment="Stretch" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectedItem="{Binding selecteEnvironmentModel}"
+                     ItemsSource="{Binding Source={x:Static vm:Instance.Environments}}" ItemTemplate="{StaticResource mt}"/>
+    </Grid>
+</w:WizardPage>

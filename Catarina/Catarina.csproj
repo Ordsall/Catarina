@@ -88,6 +88,7 @@
     <Compile Include="ViewModel\EnvironmentAddMasterModel.cs" />
     <Compile Include="ViewModel\EnvironmentModel.cs" />
     <Compile Include="ViewModel\ExperimentModel.cs" />
+    <Compile Include="ViewModel\ExpirementAddMasterModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DeviceSelectView.xaml.cs">
@@ -107,6 +108,9 @@
     </Compile>
     <Compile Include="View\EnvironmentSetup.xaml.cs">
       <DependentUpon>EnvironmentSetup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ExperimentAddMasterPages\EnvironmentChoisePage.xaml.cs">
+      <DependentUpon>EnvironmentChoisePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ExperimentView.xaml.cs">
       <DependentUpon>ExperimentView.xaml</DependentUpon>
@@ -155,6 +159,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnvironmentSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ExperimentAddMasterPages\EnvironmentChoisePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,9 +218,7 @@
   <ItemGroup>
     <Resource Include="Resources\humidity-clipart-temperature-16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="View\ExperimentAddMasterPages\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Settings-L-icon.png" />
   </ItemGroup>

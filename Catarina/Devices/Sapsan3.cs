@@ -18,6 +18,8 @@ namespace Catarina.Devices
 
         public string DeviceInfo => String.Format("{0} ({1})", Type, _settings.PortName);
 
+        public Sapsan3Factory(SerialSettings settings) { _settings = settings; }
+
         [JsonProperty()]
         public ISettings Settings
         {
