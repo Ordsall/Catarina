@@ -19,6 +19,15 @@ namespace Catarina.ViewModel
             Progress<string> _Progress = new Progress<string>();
             _Progress.ProgressChanged += _Progress_ProgressChanged;
 
+            var imf = new Devices.Sapsan3Factory();
+            imf.Settings = new Interfaces.SerialSettings() { PortName = "COM7" };
+            var im = imf.Build();
+
+            im.Connect();
+            im.Speed = 60;
+            im.Enable();
+
+            var s = im.Serial;
 
             var v = new Devices.BOctopustFactory();
             v.Settings = new Interfaces.SerialSettings() { PortName = "COM6" };
@@ -26,6 +35,7 @@ namespace Catarina.ViewModel
             dev.Connect();
             var ser = dev.SerialNumber;
             var task = dev.GetData(_Progress);
+
         }
 
         private static void _Progress_ProgressChanged(object sender, string e)

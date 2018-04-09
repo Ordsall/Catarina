@@ -9,9 +9,11 @@ namespace Catarina.Interfaces
     public interface IImitatorFactory
     {
         IImitator Build();
-
+        
         string Type { get; }
-
-        string InfoString { get; }
+        
+        string DeviceInfo { get; }
+        
+        ISettings Settings { get; set; }
     }
 }

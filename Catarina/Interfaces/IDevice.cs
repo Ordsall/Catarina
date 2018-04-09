@@ -19,7 +19,8 @@ namespace Catarina.Interfaces
 
         void Connect();
 
-        
+        void Disconnect();
 
+        bool IsConnected { get; }
     }
 }

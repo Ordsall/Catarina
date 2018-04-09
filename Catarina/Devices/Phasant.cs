@@ -129,6 +129,8 @@ namespace Catarina.Devices
 
         public ISettings Settings { get; set; }
 
+        public bool IsConnected => device.IsConnected;
+
         public void Connect()
         {
             try
@@ -146,6 +148,8 @@ namespace Catarina.Devices
                 var d = new Dictionary<string, object>();
 
                 progress?.Report("Снятие уровня шума");
+
+                d.Add("Спектр сигнала", device.GetSpectrum());
 
                 Double noize = (device.Noise[0] + device.Noise[0] + device.Noise[0] + device.Noise[0]) / 4;
 
@@ -213,6 +217,13 @@ namespace Catarina.Devices
             else throw new Exception("Невозможно подключится к устройству");
         }
 
-
+        public void Disconnect()
+        {
+            if(device.IsConnected)
+            {
+                device.DisableFlow();
+                device.Disconnect();
+            }
+        }
     }
 }

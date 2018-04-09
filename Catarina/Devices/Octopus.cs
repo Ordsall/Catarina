@@ -40,17 +40,29 @@ namespace Catarina.Devices
         public Octopus(OctopusFactory Factory, SerialSettings Settings)
         {
             DeviceType = Factory;
-            Device = new Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device();
+            OctDevice = new Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device();
+            PhDevice = new Olvia.Devices.pheasant.Device();
+
+            PhDevice.DetectorsChanged += PhDevice_DetectorsChanged;
         }
 
-        Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device Device;
+        Olvia.Devices.pheasant.Detector[] Detectors = null;
+
+        private void PhDevice_DetectorsChanged(Olvia.Devices.pheasant.Detector[] Detectors)
+        {
+            this.Detectors = Detectors;
+        }
+
+        Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device OctDevice;
+        Olvia.Devices.pheasant.Device PhDevice;
 
         public string SerialNumber
         {
             get
             {
-                if (Device.IsConnected) return "123123123";
-                else return "Неопределено";
+                try { if (PhDevice.IsConnected) return PhDevice.Settings.SerialNumber; }
+                catch (Exception) { return null; }
+                return null;
             }
         }
 
@@ -60,12 +72,17 @@ namespace Catarina.Devices
 
         public ISettings Settings { get; set; }
 
+        public bool IsConnected => PhDevice.IsConnected;
+
         public void Connect()
         {
             try
             {
-                var b = Device.Connect((Settings as SerialSettings).PortName);
-                if (!b) { throw new Exception("Невозможно подключится к устройству"); }
+                var b = OctDevice.Connect((Settings as SerialSettings).PortName);
+                OctDevice.SwitchToPheasant();
+                OctDevice.Disconnect();
+                var s = PhDevice.Connect((Settings as SerialSettings).PortName);
+                if (!b || !s) { throw new Exception("Невозможно подключится к устройству"); }
             }
             catch (Exception ex) { throw ex; }
 
@@ -74,12 +91,95 @@ namespace Catarina.Devices
         Dictionary<string, object> IDevice.GetData(IProgress<string> progress)
         {
 
-            if (Device.IsConnected)
+            if (PhDevice.IsConnected)
             {
                 var d = new Dictionary<string, object>();
+
+                progress?.Report("Снятие уровня шума");
+
+                Double noize = (PhDevice.Noise[0] + PhDevice.Noise[0] + PhDevice.Noise[0] + PhDevice.Noise[0]) / 4;
+
+                d.Add("Уровень шума", noize);
+
+                Olvia.Devices.pheasant.Detector det = new Olvia.Devices.pheasant.Detector();
+
+                progress?.Report("Запись настроек");
+                bool set_res = false;
+                for (int i = 0; i < 5; i++)
+                {
+                    set_res = PhDevice.ReadServiceSettings();
+                    if (set_res) break;
+                }
+                if (!set_res) { throw new Exception("Невозможно получить настройки"); }
+
+                PhDevice.Settings.RadarMode[2] = true;
+                PhDevice.Settings.PhA_A0 = -50;
+                PhDevice.WriteServiceSettings();
+
+                progress?.Report("Включение потокового режима");
+                PhDevice.EnableFlow();
+
+                Double? fist_speed = 0;
+                while (Detectors == null) { System.Threading.Thread.Sleep(100); }
+
+                progress?.Report("Набор данных");
+                fist_speed = Detectors[7].Speed;
+
+
+
+
+                int div = 0;
+
+                for (int i = 0; i < 10; i++)
+                {
+                    if (fist_speed == Detectors[7].Speed)
+                    {
+                        if (Detectors[7].Distance > 0) det.Angle += (-Detectors[7].Angle);
+                        else det.Angle += Detectors[7].Angle;
+
+                        det.Amp += Detectors[7].Amp;
+                        det.Distance += Detectors[7].Distance;
+                        det.Speed += Detectors[7].Speed;
+                        div++;
+                    }
+                }
+
+                det.Amp /= div;
+                det.Distance /= div;
+                det.Angle /= div;
+                det.Speed /= div;
+
+                progress?.Report("Выключение потокового режима");
+                PhDevice.DisableFlow();
+
+                d.Add("Уровень сигнала", det.Amp);
+                d.Add("Расстояние", det.Distance);
+                d.Add("Угловая координата", det.Angle);
+                d.Add("Скорость", det.Speed);
+
+
                 return d;
             }
-            return null;
-        }     
+            else throw new Exception("Невозможно подключится к устройству");
+        }
+
+        public void Disconnect()
+        {
+            try
+            {
+                if (PhDevice.IsConnected)
+                {
+                    PhDevice.DisableFlow();
+                    PhDevice.Disconnect();
+                }
+                OctDevice.Connect((Settings as SerialSettings).PortName);
+                if (OctDevice.IsConnected)
+                {
+                    OctDevice.SwitchFromPheasant();
+                    OctDevice.Disconnect();
+                }
+            }
+            catch (Exception) { throw; }           
+        }
     }
 }
