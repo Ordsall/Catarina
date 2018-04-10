@@ -18,6 +18,7 @@
             <ms:EnvironmentChoisePage x:Name="wpg_ExpSelect" DataContext="{Binding}"/>
             <ms:DeviceSelectPage x:Name="wpg_DevSelect" DataContext="{Binding}"/>
             <ms:ExpirementConfigurationPage x:Name="wpg_EnvConf" DataContext="{Binding}"/>
+            <ms:EnvironmentCheckPage x:Name="wpg_EnvCheck" DataContext="{Binding}"/>
             <w:WizardPage PageType="Interior" CanFinish="True" CanSelectPreviousPage="False" CanCancel="False" CanHelp="False" HelpButtonVisibility="Hidden"
                           Title="Тест успешно создан"
                           Description="Создание теста закончено"

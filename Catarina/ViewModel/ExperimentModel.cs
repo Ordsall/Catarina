@@ -8,12 +8,32 @@ namespace Catarina.ViewModel
 {
     public class ExperimentModel : ViewModelBase
     {
-        public string Type => Device.Type;
+        public ExperimentModel(ViewModel.ExpirementAddMasterModel ModelFrom)
+        {
+            SelectedDevice = ModelFrom.selectedDeviceFactory;
+            Environment = ModelFrom.selecteEnvironmentModel;
+            switch (ModelFrom.TerminateCause)
+            {
+                case TimeExpWatch.ByTime:
+                    TerminateSpan = ModelFrom.TerminateDateTime - DateTime.Now;
+                    break;
+                case TimeExpWatch.ByInterval:
+                    TerminateSpan = ModelFrom.TerminateSpan;
+                    break;
+            }
+            FetchSpan = ModelFrom.FetchSpan;
+        }
 
-        public string Serial => Device.SerialNumber;
+        public TimeSpan FetchSpan { get; set; } = TimeSpan.FromMinutes(5);
 
-        public Interfaces.IDevice Device { get; set; }
+        public TimeSpan TerminateSpan { get; set; } = TimeSpan.FromHours(24);
 
-        
+        public ViewModel.EnvironmentModel Environment { get; set; }
+
+        public Interfaces.IDeviceFactory SelectedDevice { get; set; }
+
+
+
+
     }
 }

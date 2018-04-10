@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Catarina.ViewModel
 {
@@ -31,9 +32,35 @@ namespace Catarina.ViewModel
             return new ExpirementAddMasterModel();
         }
 
+        public Progress<string> progress = new Progress<string>();
+
+        void TryFetchTestData(IProgress<string> progress_reporter)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                var immitator = selecteEnvironmentModel.Imitator.Build();
+                progress_reporter?.Report(String.Format("Попытка подключения к имитатору {0}", selecteEnvironmentModel.Imitator.DeviceInfo));
+                try { immitator.Connect(); progress_reporter?.Report("Имитатор подключен"); }
+                catch (Exception) { progress_reporter?.Report("Подключение не удалось..."); }
+                
+            }
+            );
+        }
+
         public ExpirementAddMasterModel()
         {
+            progress.ProgressChanged += Progress_ProgressChanged;
 
+            FetchTestData = new ViewModel.RelayCommand(o =>
+            {
+                TryFetchTestData(progress);
+            }, o => true);
+        }
+
+        private void Progress_ProgressChanged(object sender, string e)
+        {
+            CheckLog += e + "\n";
+            OnPropertyChanged(nameof(CheckLog));
         }
 
         ViewModel.EnvironmentModel _selecteEnvironmentModel = null;
@@ -62,6 +89,10 @@ namespace Catarina.ViewModel
 
         [JsonProperty()]
         public TimeExpWatch TerminateCause { get; set; } = TimeExpWatch.ByTime;
+
+        public string CheckLog { get; set; } 
+
+        public ICommand FetchTestData { get; set; }
 
         public bool ByTimeIsEnabled
         {

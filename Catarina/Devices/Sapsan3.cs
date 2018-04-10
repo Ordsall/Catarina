@@ -127,7 +127,8 @@ namespace Catarina.Devices
 
         public void Connect()
         {
-            device.Connect((Settings as SerialSettings).PortName);
+            bool b = device.Connect((Settings as SerialSettings).PortName);
+            if (!b) { throw new Exception("Невозможно подключится к имитатору"); }
         }
 
         public void Disable()
