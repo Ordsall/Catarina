@@ -18,7 +18,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="1" Height="100">
-            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"/>
+                <RowDefinition Height="34"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Интервал тестирования:" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right"/>
+            <Label Content="Время завершения тестирования:" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right"/>
+            <Label Content="Интервал получения данных:" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+            <RadioButton Content="По времени завершения" Margin="4" VerticalAlignment="Center"/>
+            <RadioButton Content="По истечению интервала" Margin="4" VerticalAlignment="Center" Grid.Column="1"/>
+            <w:TimeSpanUpDown Margin="4" Grid.Column="3" Grid.Row="1"/>
+            <w:TimeSpanUpDown Margin="4" Grid.Column="1" Grid.Row="1"/>
+            <w:DateTimePicker Margin="4" Grid.Column="3" Grid.Row="0"/>
+
         </Grid>
     </Grid>
 </w:WizardPage>
