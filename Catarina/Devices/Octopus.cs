@@ -54,6 +54,7 @@ namespace Catarina.Devices
         private void PhDevice_DetectorsChanged(Olvia.Devices.pheasant.Detector[] Detectors)
         {
             this.Detectors = Detectors;
+            Speed = Detectors[7].Speed;
         }
 
         Olvia.Devices.Octopus.Olvia.Devices.Octopus.Device OctDevice;
@@ -76,6 +77,8 @@ namespace Catarina.Devices
         public ISettings Settings { get; set; }
 
         public bool IsConnected => PhDevice.IsConnected;
+
+        public double Speed { get; private set; }
 
         public void Connect()
         {

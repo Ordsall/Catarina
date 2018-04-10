@@ -111,11 +111,14 @@ namespace Catarina.Devices
             device.DetectorsChanged += Device_DetectorsChanged;
         }
 
+
+
         Olvia.Devices.pheasant.Detector[] Detectors = null;
 
         private void Device_DetectorsChanged(Olvia.Devices.pheasant.Detector[] Detectors)
         {
             this.Detectors = Detectors;
+            Speed = Detectors[7].Speed;
         }
 
         Olvia.Devices.pheasant.Device _dev = new Olvia.Devices.pheasant.Device();
@@ -137,6 +140,8 @@ namespace Catarina.Devices
 
         public bool IsConnected => device.IsConnected;
 
+        public double Speed { get; private set; }
+
         public void Connect()
         {
             try
@@ -147,6 +152,8 @@ namespace Catarina.Devices
             catch (Exception) { throw; }           
         }
 
+       
+
         public Dictionary<string, object> GetData(IProgress<string> progress = null)
         {
             if (device.IsConnected)
@@ -155,7 +162,8 @@ namespace Catarina.Devices
 
                 progress?.Report("Снятие уровня шума");
 
-                d.Add("Спектр сигнала", device.GetSpectrum());
+                device.GetSpectrum();
+                //d.Add("Спектр сигнала", device.GetSpectrum());
 
                 Double noize = (device.Noise[0] + device.Noise[0] + device.Noise[0] + device.Noise[0]) / 4;
 

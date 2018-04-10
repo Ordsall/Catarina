@@ -22,5 +22,9 @@ namespace Catarina.Interfaces
         void Disconnect();
 
         bool IsConnected { get; }
+
+        double Speed { get; }
+
+        
     }
 }

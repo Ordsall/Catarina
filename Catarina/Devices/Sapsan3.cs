@@ -134,7 +134,7 @@ namespace Catarina.Devices
         public void Disable()
         {
             tg.Enable = false;
-            if (device.IsConnected) { device.SetTarget(0, tg); }
+            device.SetTarget(0, tg); 
         }
 
         public void Enable()

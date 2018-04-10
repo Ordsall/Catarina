@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -34,26 +37,138 @@ namespace Catarina.ViewModel
 
         public Progress<string> progress = new Progress<string>();
 
+        CancellationTokenSource CancelTestingSource = new CancellationTokenSource();
+        public CancellationToken CancelTesting;
+
+        Random random = new Random();
+
         void TryFetchTestData(IProgress<string> progress_reporter)
         {
             Task.Factory.StartNew(() =>
             {
                 var immitator = selecteEnvironmentModel.Imitator.Build();
-                progress_reporter?.Report(String.Format("Попытка подключения к имитатору {0}", selecteEnvironmentModel.Imitator.DeviceInfo));
-                try { immitator.Connect(); progress_reporter?.Report("Имитатор подключен"); }
-                catch (Exception) { progress_reporter?.Report("Подключение не удалось..."); }
+                var device = selectedDeviceFactory.Build();
+                bool SucessStep = false;
+                while(!SucessStep && !CancelTesting.IsCancellationRequested)
+                {
+                    progress_reporter?.Report(String.Format("Попытка подключения к имитатору {0}", selecteEnvironmentModel.Imitator.DeviceInfo));
+                    try { immitator.Connect();
+                        progress_reporter?.Report(String.Format("Имитатор {0} {1} подключен", selecteEnvironmentModel.Imitator.DeviceInfo, immitator.Serial));
+                        SucessStep = true; }
+                    catch (Exception) { progress_reporter?.Report("Подключение к имитатору не удалось"); }
+                    System.Threading.Thread.Sleep(500);
+                }
+                SucessStep = false;
+                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                {
+                    progress_reporter?.Report("Установка параметров имитации");
+                    try
+                    {
+                        immitator.Speed = random.Next(10, 100);
+                        immitator.Direction = Direction.Income;
+                        immitator.Distance = 50;
+                        progress_reporter?.Report(String.Format("Параметры:\n \tСкорость: {0} км/ч \n \tРасстояние: {1} м\n \tНаправление: {2}",
+                            immitator.Speed, immitator.Distance, immitator.Direction == Direction.Income ? "Встречное" : "Попутное"));
+                        SucessStep = true;
+                    }
+                    catch (Exception) { progress_reporter?.Report("Ошибка установки параметров имитации"); }
+                    System.Threading.Thread.Sleep(500);
+                }
+
+                SucessStep = false;
+                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                {
+                    progress_reporter?.Report(String.Format("Попытка подключения к устройству {0}", selectedDeviceFactory.DeviceInfo));
+                    try { device.Connect();
+                        progress_reporter?.Report(String.Format("Устройство {0} {1} подключено", selectedDeviceFactory.DeviceInfo, device.SerialNumber));
+                        SucessStep = true; }
+                    catch (Exception) { progress_reporter?.Report("Подключение к устройству не удалось"); }
+                    System.Threading.Thread.Sleep(500);
+                }
+
+                SucessStep = false;
+                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                {
+                    progress_reporter?.Report("Включение имитации");
+                    immitator.Enable();
+                    System.Threading.Thread.Sleep(500);
+                    progress_reporter?.Report("Получение данных с устройства при включенной имитации");
+                    try
+                    {
+                        var data = device.GetData(progress);
+                        progress_reporter?.Report(String.Format("Измеренная скорость: {0} км/ч", device.Speed));
+
+                        if (IsWithin((int)device.Speed, (int)(immitator.Speed -1), (int)(immitator.Speed+1))) 
+                        {
+                            progress_reporter?.Report("Значение скорости в рамках погрешности(±1 км/ч) при включенной имитации");
+                            SucessStep = true;
+                        }
+                        else { progress_reporter?.Report("Значение скорости не в рамках погрешности(±1 км/ч) при включенной имитации"); }
+                    }
+                    catch (Exception) { }
+                    System.Threading.Thread.Sleep(500);
+                }
+
+                SucessStep = false;
+                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                {
+                    progress_reporter?.Report("Выключение имитации");
+                    immitator.Disable();
+                    System.Threading.Thread.Sleep(500);
+                    progress_reporter?.Report("Получение данных с устройства при выключенной имитации");
+                    try
+                    {
+                        var data = device.GetData(progress);
+                        progress_reporter?.Report(String.Format("Измеренная скорость: {0} км/ч", device.Speed));
+
+                        if (IsWithin((int)device.Speed, (int)(0 - 1), (int)(0 + 1))) ///TODO Хардкод - исправить на заполнение из конфигов
+                        {
+                            progress_reporter?.Report("Значение скорости в рамках погрешности(±1 км/ч) при выключенной имитации");
+                            SucessStep = true;
+                        }
+                        else { progress_reporter?.Report("Значение скорости не в рамках погрешности(±1 км/ч) при выключенной имитации"); }
+                    }
+                    catch (Exception) { }
+                    System.Threading.Thread.Sleep(500);
+                }
+
                 
-            }
+
+                if (CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Операция прервана");  }
+
+                try { immitator.Disconnect(); } catch (Exception) { }
+                try { device.Disconnect(); } catch (Exception) { }
+
+                progress_reporter?.Report("Автоматический тест пройден");
+                if (!CancelTesting.IsCancellationRequested) { TestComplete = true; }
+
+
+            }, CancelTesting
             );
+        }
+
+        public static bool IsWithin(int value, int minimum, int maximum)
+        {
+            return value >= minimum && value <= maximum;
         }
 
         public ExpirementAddMasterModel()
         {
+            
             progress.ProgressChanged += Progress_ProgressChanged;
 
             FetchTestData = new ViewModel.RelayCommand(o =>
             {
+                CheckLog = string.Empty;
+                CancelTestingSource = new CancellationTokenSource();
+                CancelTesting = CancelTestingSource.Token;
                 TryFetchTestData(progress);
+            }, o => true);
+
+            CancelFetchTestData = new ViewModel.RelayCommand(o =>
+            {
+                CancelTestingSource.Cancel();
+                CheckLog = string.Empty;
             }, o => true);
         }
 
@@ -64,6 +179,14 @@ namespace Catarina.ViewModel
         }
 
         ViewModel.EnvironmentModel _selecteEnvironmentModel = null;
+
+        bool _testComplete = false;
+
+        public bool TestComplete
+        {
+            get => _testComplete;
+            set { _testComplete = value; OnPropertyChanged(nameof(TestComplete)); }
+        }
 
         public ViewModel.EnvironmentModel selecteEnvironmentModel
         {
@@ -94,6 +217,8 @@ namespace Catarina.ViewModel
 
         public ICommand FetchTestData { get; set; }
 
+        public ICommand CancelFetchTestData { get; set; }
+
         public bool ByTimeIsEnabled
         {
             get
@@ -113,5 +238,12 @@ namespace Catarina.ViewModel
             }
             set { if (value) { TerminateCause = TimeExpWatch.ByInterval; } OnPropertyChanged(nameof(ByIntervalIsEnabled)); OnPropertyChanged(nameof(TerminateCause)); }
         }
+
+
+       
+
     }
+
+  
+
 }

@@ -24,5 +24,10 @@ namespace Catarina.View.ExperimentAddMasterPages
         {
             InitializeComponent();
         }
+
+        private void rtb_Log_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            rtb_Log.ScrollToEnd();
+        }
     }
 }

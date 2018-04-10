@@ -11,20 +11,23 @@
              mc:Ignorable="d"
              CanHelp="False" HelpButtonVisibility="Hidden" PageType="Interior" 
              Title="Проверка среды тестирования" Description="На текущем этапе будет проведена проверка доступности устройств и правильности измеряемых данных"
-             CanSelectNextPage="False" >
+             CanSelectNextPage="{Binding TestComplete}" >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Enter">
             <i:InvokeCommandAction Command="{Binding FetchTestData}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Leave">
+            <i:InvokeCommandAction Command="{Binding CancelFetchTestData}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Label Content="Лог проверки:" Padding="0" Margin="5,0,0,0" VerticalAlignment="Center"/>
-        <RichTextBox IsEnabled="False" Grid.Row="1" Margin="4">
+        <Label Content="Журнал действий:" Padding="0" Margin="5,0,0,0" VerticalAlignment="Center"/>
+        <RichTextBox x:Name="rtb_Log" IsEnabled="True" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="4" TextChanged="rtb_Log_TextChanged" FontFamily="Consolas" IsReadOnly="True">
             <FlowDocument>
                 <Paragraph>
                     <Run Text="{Binding CheckLog, Mode=TwoWay}"/>
