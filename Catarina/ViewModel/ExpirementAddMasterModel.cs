@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,6 +44,8 @@ namespace Catarina.ViewModel
         public CancellationToken CancelTesting;
 
         Random random = new Random();
+
+        public LiveCharts.SeriesCollection LastHourSeries { get; set; }
 
         void TryFetchTestData(IProgress<string> progress_reporter)
         {
@@ -136,12 +141,33 @@ namespace Catarina.ViewModel
 
                 if (CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Операция прервана");  }
 
-                try { immitator.Disconnect(); } catch (Exception) { }
-                try { device.Disconnect(); } catch (Exception) { }
+
 
                 progress_reporter?.Report("Автоматический тест пройден");
                 if (!CancelTesting.IsCancellationRequested) { TestComplete = true; }
 
+                if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).EnableFlow(); }
+                immitator.Enable();
+                int iter = 0;
+                bool immit = true;
+                while (!CancelTesting.IsCancellationRequested)
+                {
+                    LastHourSeries[0].Values.Add(new ObservableValue(device.Speed));
+                    if (LastHourSeries[0].Values.Count > 15) { LastHourSeries[0].Values.RemoveAt(0); }
+                    System.Threading.Thread.Sleep(1000);
+                    iter++;
+                    if (iter > 10)
+                    {
+                        if (immit) { immitator.Disable(); }
+                        else { immitator.Enable(); }
+                        immit = !immit;
+                        iter = 0;
+                    }
+                }
+                if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).DisableFlow(); }
+
+                try { immitator.Disconnect(); } catch (Exception) { }
+                try { device.Disconnect(); } catch (Exception) { }
 
             }, CancelTesting
             );
@@ -154,7 +180,15 @@ namespace Catarina.ViewModel
 
         public ExpirementAddMasterModel()
         {
-            
+            LastHourSeries = new LiveCharts.SeriesCollection
+            {
+                new LineSeries
+                {
+                    AreaLimit = -10,
+                    Values = new ChartValues<ObservableValue> { }
+                }
+            };
+
             progress.ProgressChanged += Progress_ProgressChanged;
 
             FetchTestData = new ViewModel.RelayCommand(o =>

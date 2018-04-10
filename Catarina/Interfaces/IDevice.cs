@@ -25,6 +25,13 @@ namespace Catarina.Interfaces
 
         double Speed { get; }
 
-        
+
+    }
+
+    public interface IFlowable
+    {
+        void EnableFlow();
+
+        void DisableFlow();
     }
 }

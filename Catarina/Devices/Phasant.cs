@@ -96,7 +96,7 @@ namespace Catarina.Devices
         }
     }
 
-    public class Phasant : IDevice
+    public class Phasant : IDevice, IFlowable
     {
 
         Olvia.Devices.pheasant.Device device;
@@ -239,5 +239,9 @@ namespace Catarina.Devices
                 device.Disconnect();
             }
         }
+
+        public void EnableFlow() => device.EnableFlow();
+
+        public void DisableFlow() => device.DisableFlow();
     }
 }
