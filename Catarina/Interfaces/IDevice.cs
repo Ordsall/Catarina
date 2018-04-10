@@ -34,4 +34,9 @@ namespace Catarina.Interfaces
 
         void DisableFlow();
     }
+
+    public interface ISpectrum
+    {
+        IEnumerable<double> GetSpectrum();
+    }
 }

@@ -18,6 +18,18 @@ namespace Catarina.ViewModel
 
     public enum TimeExpWatch { ByTime, ByInterval }
 
+    //public interface IProgressData { }
+
+    //public class StringProgress : IProgressData
+    //{
+    //    public string Message = String.Empty;
+    //}
+
+    //public class SeriesProgress : IProgressData
+    //{
+    //    public ChartValues<double> Series;
+    //}
+
     [JsonObject(MemberSerialization.OptIn)]
     public class ExpirementAddMasterModel : ViewModelBase
     {
@@ -45,7 +57,11 @@ namespace Catarina.ViewModel
 
         Random random = new Random();
 
-        public LiveCharts.SeriesCollection LastHourSeries { get; set; }
+        //public LiveCharts.SeriesCollection LastHourSeries { get; set; }
+
+        System.Windows.Threading.Dispatcher dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+
+        public ChartValues<double> Spectrum { get; set; } = new ChartValues<double>();
 
         void TryFetchTestData(IProgress<string> progress_reporter)
         {
@@ -71,7 +87,7 @@ namespace Catarina.ViewModel
                     {
                         immitator.Speed = random.Next(10, 100);
                         immitator.Direction = Direction.Income;
-                        immitator.Distance = 50;
+                        immitator.Distance = 10;
                         progress_reporter?.Report(String.Format("Параметры:\n \tСкорость: {0} км/ч \n \tРасстояние: {1} м\n \tНаправление: {2}",
                             immitator.Speed, immitator.Distance, immitator.Direction == Direction.Income ? "Встречное" : "Попутное"));
                         SucessStep = true;
@@ -137,34 +153,25 @@ namespace Catarina.ViewModel
                     System.Threading.Thread.Sleep(500);
                 }
 
-                
-
                 if (CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Операция прервана");  }
 
+                
+                if (!CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Автоматический тест пройден"); TestComplete = true; }
 
 
-                progress_reporter?.Report("Автоматический тест пройден");
-                if (!CancelTesting.IsCancellationRequested) { TestComplete = true; }
-
-                if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).EnableFlow(); }
                 immitator.Enable();
-                int iter = 0;
-                bool immit = true;
+
                 while (!CancelTesting.IsCancellationRequested)
                 {
-                    LastHourSeries[0].Values.Add(new ObservableValue(device.Speed));
-                    if (LastHourSeries[0].Values.Count > 15) { LastHourSeries[0].Values.RemoveAt(0); }
-                    System.Threading.Thread.Sleep(1000);
-                    iter++;
-                    if (iter > 10)
+                    if (device is Interfaces.ISpectrum)
                     {
-                        if (immit) { immitator.Disable(); }
-                        else { immitator.Enable(); }
-                        immit = !immit;
-                        iter = 0;
+                        var spectrum = (device as Interfaces.ISpectrum).GetSpectrum();
+                        var cv = new ChartValues<double>();
+                        cv.AddRange(spectrum);
+                        dispatcher?.BeginInvoke((Action)delegate () { Spectrum = cv; OnPropertyChanged(nameof(Spectrum)); }); 
                     }
                 }
-                if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).DisableFlow(); }
+
 
                 try { immitator.Disconnect(); } catch (Exception) { }
                 try { device.Disconnect(); } catch (Exception) { }
@@ -178,16 +185,18 @@ namespace Catarina.ViewModel
             return value >= minimum && value <= maximum;
         }
 
+        
+
         public ExpirementAddMasterModel()
         {
-            LastHourSeries = new LiveCharts.SeriesCollection
-            {
-                new LineSeries
-                {
-                    AreaLimit = -10,
-                    Values = new ChartValues<ObservableValue> { }
-                }
-            };
+            //LastHourSeries = new LiveCharts.SeriesCollection
+            //{
+            //    new LineSeries
+            //    {
+            //        AreaLimit = -10,
+            //        Values = new ChartValues<double> { }
+            //    }
+            //};
 
             progress.ProgressChanged += Progress_ProgressChanged;
 

@@ -96,7 +96,7 @@ namespace Catarina.Devices
         }
     }
 
-    public class Phasant : IDevice, IFlowable
+    public class Phasant : IDevice, IFlowable, ISpectrum
     {
 
         Olvia.Devices.pheasant.Device device;
@@ -243,5 +243,14 @@ namespace Catarina.Devices
         public void EnableFlow() => device.EnableFlow();
 
         public void DisableFlow() => device.DisableFlow();
+
+        public IEnumerable<double> GetSpectrum()
+        {
+            var d = device.GetSpectrum();
+            double[] tmp = new double[d.GetLength(1)];
+            Buffer.BlockCopy(d, 0, tmp, 0, tmp.Length * sizeof(double));
+            List<double> list = new List<double>(tmp);
+            return list;
+        }
     }
 }
