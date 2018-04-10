@@ -15,5 +15,11 @@ namespace Catarina.Interfaces
         string DeviceInfo { get; }
         
         ISettings Settings { get; set; }
+
+        double Speed { get; set; }
+
+        double Distance { get; set; }
+
+        ViewModel.Direction Direction { get; set; }
     }
 }

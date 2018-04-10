@@ -1,4 +1,4 @@
-﻿<w:WizardPage x:Class="Catarina.View.ExperimentAddMasterPages.DeviceSelectPage"
+﻿<w:WizardPage x:Class="Catarina.View.ExperimentAddMasterPages.ExpirementConfigurationPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,14 @@
              CanHelp="False" HelpButtonVisibility="Hidden" PageType="Interior" 
              Title="Настройка тестируемых устройств" Description="Выберите необходимые устройства из доступных ниже. Впоследствии они будут доступны для тестирования в создаваемой конфигурации."
              CanSelectNextPage="True" >
-    <Grid>
-        <ListBox Margin="5" x:Name="lb_DeviceTypeSelect" ItemsSource="{Binding selecteEnvironmentModel.DeviceTypes}" DisplayMemberPath="DeviceInfo" SelectedItem="{Binding selectedDeviceFactory}" />    
+    <Grid Height="150">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1" Height="100">
+            
+        </Grid>
     </Grid>
 </w:WizardPage>

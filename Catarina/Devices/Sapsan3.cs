@@ -31,6 +31,15 @@ namespace Catarina.Devices
             }
         }
 
+        [JsonProperty()]
+        public double Speed { get; set; }
+
+        [JsonProperty()]
+        public double Distance { get; set; }
+
+        [JsonProperty()]
+        public Direction Direction { get; set; }
+
         public IImitator Build()
         {
             var p = new Sapsan3(this, _settings);

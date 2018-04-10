@@ -115,6 +115,9 @@
     <Compile Include="View\ExperimentAddMasterPages\EnvironmentChoisePage.xaml.cs">
       <DependentUpon>EnvironmentChoisePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ExperimentAddMasterPages\ExpirementConfigurationPage.xaml.cs">
+      <DependentUpon>ExpirementConfigurationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ExperimentView.xaml.cs">
       <DependentUpon>ExperimentView.xaml</DependentUpon>
     </Compile>
@@ -170,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ExperimentAddMasterPages\EnvironmentChoisePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ExperimentAddMasterPages\ExpirementConfigurationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

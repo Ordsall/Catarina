@@ -111,11 +111,35 @@ namespace Catarina.ViewModel
             }
         }
 
-        public uint ImitationSpeed { get; set; } = 60;
+        public uint ImitationSpeed
+        {
+            get => AvaibleImitatorsSelectedItem != null ? Convert.ToUInt32(AvaibleImitatorsSelectedItem.Speed) : 0;
+            set
+            {
+                if (AvaibleImitatorsSelectedItem != null) { AvaibleImitatorsSelectedItem.Speed = value; }
+                OnPropertyChanged(nameof(ImitationSpeed));
+            }
+        }
 
-        public uint ImitationDistance { get; set; } = 20;
+        public uint ImitationDistance
+        {
+            get => AvaibleImitatorsSelectedItem != null ? Convert.ToUInt32(AvaibleImitatorsSelectedItem.Distance) : 0;
+            set
+            {
+                if (AvaibleImitatorsSelectedItem != null) { AvaibleImitatorsSelectedItem.Distance = value; }
+                OnPropertyChanged(nameof(ImitationDistance));
+            }
+        }
 
-        public Direction ImitationDirection { get; set; } = Direction.Income;
+        public Direction ImitationDirection
+        {
+            get => AvaibleImitatorsSelectedItem != null ? AvaibleImitatorsSelectedItem.Direction : 0;
+            set
+            {
+                if (AvaibleImitatorsSelectedItem != null) { AvaibleImitatorsSelectedItem.Direction = value; }
+                OnPropertyChanged(nameof(ImitationDirection));
+            }
+        }
 
         public ObservableCollection<Interfaces.IDeviceFactory> AvalibleDevices { get; set; } = new ObservableCollection<Interfaces.IDeviceFactory>();
 
