@@ -9,18 +9,31 @@
              xmlns:hlp="clr-namespace:Catarina.View.Helpers"
              mc:Ignorable="d"
              CanHelp="False" HelpButtonVisibility="Hidden" PageType="Interior" 
-             Title="Настройка тестируемых устройств" Description="Выберите необходимые устройства из доступных ниже. Впоследствии они будут доступны для тестирования в создаваемой конфигурации."
+             Title="Настройка параметров проведения тестирования" Description="Выберите необходимые параметры проведения тестироания. Установите интервал измерения параметров и настройте параметры завершения тестирования."
              CanSelectNextPage="True" >
-    <Grid Height="150">
+    <Grid  >
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+
         </Grid.RowDefinitions>
-        <Grid Grid.Row="1" Height="100">
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Интервал измерения параметров:" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+            <w:TimeSpanUpDown Margin="4" Width="110" CurrentDateTimePart="Minute" ShowSeconds="True" Minimum="0" Value="{Binding FetchSpan}" />
+        </StackPanel>
+        <Separator Grid.Row="1"/>
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="34"/>
-                <RowDefinition Height="34"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -29,14 +42,27 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Интервал тестирования:" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right"/>
-            <Label Content="Время завершения тестирования:" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right"/>
-            <Label Content="Интервал получения данных:" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
-            <RadioButton Content="По времени завершения" Margin="4" VerticalAlignment="Center"/>
-            <RadioButton Content="По истечению интервала" Margin="4" VerticalAlignment="Center" Grid.Column="1"/>
-            <w:TimeSpanUpDown Margin="4" Grid.Column="3" Grid.Row="1"/>
-            <w:TimeSpanUpDown Margin="4" Grid.Column="1" Grid.Row="1"/>
-            <w:DateTimePicker Margin="4" Grid.Column="3" Grid.Row="0"/>
+            <Label Content="Определение времени продолжительности тестирования:" Margin="0" Grid.ColumnSpan="4" />
+            <RadioButton x:Name="rbtn_ByTime" Content="По достижению времени завершения" Margin="20,0,0,0" IsChecked="{Binding ByTimeIsEnabled}" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="4"/>
+            <Label Margin="20,0,0,0" Grid.ColumnSpan="4" Grid.Row="2" IsEnabled="False">
+                <TextBlock TextWrapping="WrapWithOverflow" IsEnabled="False">
+                    Тестирование будет автоматически остановлено когда будет достигнуто время завершения тестирования. Пример: Тестировнаие должно завершиться 11.04.2019 в 12.00
+                </TextBlock>
+            </Label>
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding IsChecked, ElementName=rbtn_ByTime}">
+                <Label Content="Время завершения тестирования:" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+                <w:DateTimePicker Margin="4" Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="2" Width="180" Value="{Binding TerminateDateTime}"/>
+            </StackPanel>
+            <RadioButton x:Name="rbtn_ByInterval" Content="По истечению интервала тестирования" Margin="20,0,0,0" IsChecked="{Binding ByIntervalIsEnabled}" VerticalAlignment="Center" Grid.Row="4" Grid.ColumnSpan="4"/>
+            <Label Margin="20,0,0,0" Grid.ColumnSpan="4" Grid.Row="5" IsEnabled="False">
+                <TextBlock TextWrapping="WrapWithOverflow" IsEnabled="False">
+                    Тестирование будет автоматически остановлено когда истечет интервал тестирования. Пример: Тестировнаие должно завершиться через 12 часов и 15 минут.
+                </TextBlock>
+            </Label>
+            <StackPanel Grid.Row="6" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding IsChecked, ElementName=rbtn_ByInterval}">
+                <Label Content="Интервал тестирования:" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                <w:TimeSpanUpDown Margin="4" Width="110" Value="{Binding TerminateSpan}" ShowSeconds="False" />
+            </StackPanel>
 
         </Grid>
     </Grid>

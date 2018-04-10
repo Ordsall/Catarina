@@ -32,10 +32,11 @@ namespace Catarina
         private void bt_Add_Click(object sender, RoutedEventArgs e)
         {
             View.ExperimentAddMaster Master = new View.ExperimentAddMaster();
-            Master.DataContext = new ViewModel.ExpirementAddMasterModel();
+            Master.DataContext = ViewModel.ExpirementAddMasterModel.Load();
             Master.Owner = this;
             Master.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            Master.ShowDialog();            
+            Master.ShowDialog();
+            ViewModel.ExpirementAddMasterModel.Save(Master.DataContext as ViewModel.ExpirementAddMasterModel);
         }
 
         private void bt_Rem_Click(object sender, RoutedEventArgs e)
