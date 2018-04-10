@@ -23,6 +23,8 @@ namespace Catarina.ViewModel
         [JsonProperty()]
         public Interfaces.IImitatorFactory Imitator { get; set; } = new Devices.Sapsan3Factory(new Interfaces.SerialSettings(null));
 
+        public bool IsBusy { get; set; } = false;
+
         public string DevicesIncludedToString
         {
             get

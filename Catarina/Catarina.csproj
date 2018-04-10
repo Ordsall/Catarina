@@ -109,6 +109,9 @@
     <Compile Include="View\EnvironmentSetup.xaml.cs">
       <DependentUpon>EnvironmentSetup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ExperimentAddMasterPages\DeviceSelectPage.xaml.cs">
+      <DependentUpon>DeviceSelectPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ExperimentAddMasterPages\EnvironmentChoisePage.xaml.cs">
       <DependentUpon>EnvironmentChoisePage.xaml</DependentUpon>
     </Compile>
@@ -159,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnvironmentSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ExperimentAddMasterPages\DeviceSelectPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

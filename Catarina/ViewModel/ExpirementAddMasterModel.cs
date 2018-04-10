@@ -9,6 +9,21 @@ namespace Catarina.ViewModel
 {
     public class ExpirementAddMasterModel : ViewModelBase
     {
-        public ViewModel.EnvironmentModel selecteEnvironmentModel { get; set; }
+
+        ViewModel.EnvironmentModel _selecteEnvironmentModel = null;
+
+        public ViewModel.EnvironmentModel selecteEnvironmentModel
+        {
+            get => _selecteEnvironmentModel;
+            set { _selecteEnvironmentModel = value; OnPropertyChanged(nameof(selecteEnvironmentModel)); }
+        }
+
+        Interfaces.IDeviceFactory _selectedDeviceFactory = null;
+
+        public Interfaces.IDeviceFactory selectedDeviceFactory
+        {
+            get => _selectedDeviceFactory;
+            set { _selectedDeviceFactory = value; OnPropertyChanged(nameof(selectedDeviceFactory)); }
+        }
     }
 }
