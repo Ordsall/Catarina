@@ -18,18 +18,6 @@ namespace Catarina.ViewModel
 
     public enum TimeExpWatch { ByTime, ByInterval }
 
-    //public interface IProgressData { }
-
-    //public class StringProgress : IProgressData
-    //{
-    //    public string Message = String.Empty;
-    //}
-
-    //public class SeriesProgress : IProgressData
-    //{
-    //    public ChartValues<double> Series;
-    //}
-
     [JsonObject(MemberSerialization.OptIn)]
     public class ExpirementAddMasterModel : ViewModelBase
     {
@@ -55,41 +43,62 @@ namespace Catarina.ViewModel
         CancellationTokenSource CancelTestingSource = new CancellationTokenSource();
         public CancellationToken CancelTesting;
 
-        Random random = new Random();
+        CancellationTokenSource CancelSamplingSource = new CancellationTokenSource();
+        public CancellationToken CancelSampling;
 
-        //public LiveCharts.SeriesCollection LastHourSeries { get; set; }
+        Random random = new Random();
 
         System.Windows.Threading.Dispatcher dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
 
         public ChartValues<double> Spectrum { get; set; } = new ChartValues<double>();
 
+        int FailAvalibleCount = 5;
+
+        public Interfaces.IDevice device = null;
+        public Interfaces.IImitator imitator = null;
+
+        
+
         void TryFetchTestData(IProgress<string> progress_reporter)
         {
             Task.Factory.StartNew(() =>
             {
-                var immitator = selecteEnvironmentModel.Imitator.Build();
-                var device = selectedDeviceFactory.Build();
+                IsTestFinish = false;
+                int failcounter = 0;
+
+                if (imitator == null) { imitator = selecteEnvironmentModel.Imitator.Build(); }
+                if (device == null) { device = selectedDeviceFactory.Build(); }
+
                 bool SucessStep = false;
-                while(!SucessStep && !CancelTesting.IsCancellationRequested)
+                if (!imitator.IsConnected)
                 {
-                    progress_reporter?.Report(String.Format("Попытка подключения к имитатору {0}", selecteEnvironmentModel.Imitator.DeviceInfo));
-                    try { immitator.Connect();
-                        progress_reporter?.Report(String.Format("Имитатор {0} {1} подключен", selecteEnvironmentModel.Imitator.DeviceInfo, immitator.Serial));
-                        SucessStep = true; }
-                    catch (Exception) { progress_reporter?.Report("Подключение к имитатору не удалось"); }
-                    System.Threading.Thread.Sleep(500);
+                    while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
+                    {
+                        failcounter++;
+                        progress_reporter?.Report(String.Format("Попытка подключения к имитатору {0}", selecteEnvironmentModel.Imitator.DeviceInfo));
+                        try
+                        {
+                            imitator.Connect();
+                            progress_reporter?.Report(String.Format("Имитатор {0} {1} подключен", selecteEnvironmentModel.Imitator.DeviceInfo, imitator.Serial));
+                            SucessStep = true;
+                        }
+                        catch (Exception) { progress_reporter?.Report("Подключение к имитатору не удалось"); }
+                        System.Threading.Thread.Sleep(500);
+                    }
                 }
+
                 SucessStep = false;
-                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
                 {
+                    failcounter++;
                     progress_reporter?.Report("Установка параметров имитации");
                     try
                     {
-                        immitator.Speed = random.Next(10, 100);
-                        immitator.Direction = Direction.Income;
-                        immitator.Distance = 10;
+                        imitator.Speed = random.Next(10, 100);
+                        imitator.Direction = Direction.Income;
+                        imitator.Distance = 10;
                         progress_reporter?.Report(String.Format("Параметры:\n \tСкорость: {0} км/ч \n \tРасстояние: {1} м\n \tНаправление: {2}",
-                            immitator.Speed, immitator.Distance, immitator.Direction == Direction.Income ? "Встречное" : "Попутное"));
+                            imitator.Speed, imitator.Distance, imitator.Direction == Direction.Income ? "Встречное" : "Попутное"));
                         SucessStep = true;
                     }
                     catch (Exception) { progress_reporter?.Report("Ошибка установки параметров имитации"); }
@@ -97,29 +106,39 @@ namespace Catarina.ViewModel
                 }
 
                 SucessStep = false;
-                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                if (!device.IsConnected)
                 {
-                    progress_reporter?.Report(String.Format("Попытка подключения к устройству {0}", selectedDeviceFactory.DeviceInfo));
-                    try { device.Connect();
-                        progress_reporter?.Report(String.Format("Устройство {0} {1} подключено", selectedDeviceFactory.DeviceInfo, device.SerialNumber));
-                        SucessStep = true; }
-                    catch (Exception) { progress_reporter?.Report("Подключение к устройству не удалось"); }
-                    System.Threading.Thread.Sleep(500);
+                    while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
+                    {
+                        failcounter++;
+                        progress_reporter?.Report(String.Format("Попытка подключения к устройству {0}", selectedDeviceFactory.DeviceInfo));
+                        try
+                        {
+                            device.Connect();
+                            progress_reporter?.Report(String.Format("Устройство {0} {1} подключено", selectedDeviceFactory.DeviceInfo, device.SerialNumber));
+                            SucessStep = true;
+                        }
+                        catch (Exception) { progress_reporter?.Report("Подключение к устройству не удалось"); }
+                        System.Threading.Thread.Sleep(500);
+                    }
                 }
 
+                
                 SucessStep = false;
-                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
                 {
+                    failcounter++;
                     progress_reporter?.Report("Включение имитации");
-                    immitator.Enable();
+                    imitator.Enable();
                     System.Threading.Thread.Sleep(500);
                     progress_reporter?.Report("Получение данных с устройства при включенной имитации");
                     try
                     {
+
                         var data = device.GetData(progress);
                         progress_reporter?.Report(String.Format("Измеренная скорость: {0} км/ч", device.Speed));
 
-                        if (IsWithin((int)device.Speed, (int)(immitator.Speed -1), (int)(immitator.Speed+1))) 
+                        if (IsWithin((int)device.Speed, (int)(imitator.Speed -1), (int)(imitator.Speed+1))) 
                         {
                             progress_reporter?.Report("Значение скорости в рамках погрешности(±1 км/ч) при включенной имитации");
                             SucessStep = true;
@@ -131,10 +150,11 @@ namespace Catarina.ViewModel
                 }
 
                 SucessStep = false;
-                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
                 {
+                    failcounter++;
                     progress_reporter?.Report("Выключение имитации");
-                    immitator.Disable();
+                    imitator.Disable();
                     System.Threading.Thread.Sleep(500);
                     progress_reporter?.Report("Получение данных с устройства при выключенной имитации");
                     try
@@ -153,52 +173,97 @@ namespace Catarina.ViewModel
                     System.Threading.Thread.Sleep(500);
                 }
 
-                if (CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Операция прервана");  }
+                if (CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Операция прервана"); }
+                if (!CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5) { progress_reporter?.Report("Автоматический тест пройден"); TestComplete = true; }
+                if (!CancelTesting.IsCancellationRequested && failcounter >= FailAvalibleCount + 5) { progress_reporter?.Report("Автоматический тест не пройден"); TestComplete = false; }
 
-                
-                if (!CancelTesting.IsCancellationRequested) { progress_reporter?.Report("Автоматический тест пройден"); TestComplete = true; }
+                IsTestFinish = true;
 
-
-                immitator.Enable();
-
-                while (!CancelTesting.IsCancellationRequested)
-                {
-                    if (device is Interfaces.ISpectrum)
-                    {
-                        var spectrum = (device as Interfaces.ISpectrum).GetSpectrum();
-                        var cv = new ChartValues<double>();
-                        cv.AddRange(spectrum);
-                        dispatcher?.BeginInvoke((Action)delegate () { Spectrum = cv; OnPropertyChanged(nameof(Spectrum)); }); 
-                    }
-                }
-
-
-                try { immitator.Disconnect(); } catch (Exception) { }
-                try { device.Disconnect(); } catch (Exception) { }
+                try { if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).DisableFlow(); } } catch (Exception) { }
 
             }, CancelTesting
             );
         }
+
+        Progress<IEnumerable<double>> SpectrumProgress = new Progress<IEnumerable<double>>();
+
+        void TryFetchSamplingData(IProgress<IEnumerable<double>> progress)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                progress.Report(Enumerable.Empty<double>());
+                try { imitator.Enable(); } catch (Exception) { }
+                
+                try { if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).DisableFlow(); } } catch (Exception) { }
+                while (!CancelSampling.IsCancellationRequested)
+                {
+                    try
+                    {
+                        if (!imitator.IsConnected) { imitator.Connect(); }
+                        if (!device.IsConnected) { device.Connect(); }
+                        if (device is Interfaces.ISpectrum)
+                        {
+                            var spectrum = (device as Interfaces.ISpectrum).GetSpectrum();
+                            progress.Report(spectrum);
+                        }
+                    }
+                    catch (Exception) { System.Threading.Thread.Sleep(1000); }                 
+                }
+
+                try { imitator.Disable(); } catch (Exception) { }
+            }, CancelSampling );
+        }
+
+
+        void DisconnectDevicesIfConnected()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                try { imitator.Disconnect(); } catch (Exception) { }
+                try { device.Disconnect(); } catch (Exception) { }
+                DeviceDisconnectionFinished = true;
+            });
+        }
+
+        void CloseMasterRequest()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                CancelTestingSource.Cancel();
+                CancelSamplingSource.Cancel();
+                try { imitator.Disable(); } catch (Exception) { }
+                try { if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).DisableFlow(); } } catch (Exception) { }
+                try { imitator.Disconnect(); } catch (Exception) { }
+                try { device.Disconnect(); } catch (Exception) { }
+                device = null;
+                imitator = null;
+            });
+        }
+
 
         public static bool IsWithin(int value, int minimum, int maximum)
         {
             return value >= minimum && value <= maximum;
         }
 
-        
+        public ICommand FetchTestData { get; set; }
+
+        public ICommand CancelFetchTestData { get; set; }
+
+        public ICommand FetchSamplingData { get; set; }
+
+        public ICommand CancelSamplingTestData { get; set; }
+
+        public ICommand RefreshFetchTestData { get; set; }
+
+        public ICommand DisconnectDevices { get; set; }
+
+        public ICommand CloseMaster { get; set; }
 
         public ExpirementAddMasterModel()
         {
-            //LastHourSeries = new LiveCharts.SeriesCollection
-            //{
-            //    new LineSeries
-            //    {
-            //        AreaLimit = -10,
-            //        Values = new ChartValues<double> { }
-            //    }
-            //};
-
             progress.ProgressChanged += Progress_ProgressChanged;
+            SpectrumProgress.ProgressChanged += SpectrumProgress_ProgressChanged;
 
             FetchTestData = new ViewModel.RelayCommand(o =>
             {
@@ -212,7 +277,45 @@ namespace Catarina.ViewModel
             {
                 CancelTestingSource.Cancel();
                 CheckLog = string.Empty;
+                TestComplete = false;
             }, o => true);
+
+            RefreshFetchTestData = new ViewModel.RelayCommand(o =>
+            {
+                CheckLog = string.Empty;
+                TestComplete = false;
+                TryFetchTestData(progress);
+            }, o => true);
+
+            FetchSamplingData = new ViewModel.RelayCommand(o =>
+            {
+                CancelSamplingSource = new CancellationTokenSource();
+                CancelSampling = CancelSamplingSource.Token;
+                TryFetchSamplingData(SpectrumProgress);
+            }, o => true);
+
+            CancelSamplingTestData = new ViewModel.RelayCommand(o =>
+            {
+                CancelSamplingSource.Cancel();
+                Spectrum.Clear();
+            }, o => true);
+
+            DisconnectDevices = new ViewModel.RelayCommand(o =>
+            {
+                DeviceDisconnectionFinished = false;
+                DisconnectDevicesIfConnected();
+            }, o => true);
+
+            CloseMaster = new ViewModel.RelayCommand(o =>
+            {
+                CloseMasterRequest();
+            }, o => true);
+        }
+
+        private void SpectrumProgress_ProgressChanged(object sender, IEnumerable<double> e)
+        {
+            Spectrum.Clear();
+            Spectrum.AddRange(e);
         }
 
         private void Progress_ProgressChanged(object sender, string e)
@@ -223,12 +326,28 @@ namespace Catarina.ViewModel
 
         ViewModel.EnvironmentModel _selecteEnvironmentModel = null;
 
+        bool _deviceDisconnectionFinished = true;
+
+        public bool DeviceDisconnectionFinished
+        {
+            get => _deviceDisconnectionFinished;
+            set { _deviceDisconnectionFinished = value; OnPropertyChanged(nameof(DeviceDisconnectionFinished)); }
+        }
+
         bool _testComplete = false;
 
         public bool TestComplete
         {
             get => _testComplete;
             set { _testComplete = value; OnPropertyChanged(nameof(TestComplete)); }
+        }
+
+        bool _isTestFinish = false;
+
+        public bool IsTestFinish
+        {
+            get => _isTestFinish;
+            set { _isTestFinish = value; OnPropertyChanged(nameof(IsTestFinish)); }
         }
 
         public ViewModel.EnvironmentModel selecteEnvironmentModel
@@ -257,10 +376,6 @@ namespace Catarina.ViewModel
         public TimeExpWatch TerminateCause { get; set; } = TimeExpWatch.ByTime;
 
         public string CheckLog { get; set; } 
-
-        public ICommand FetchTestData { get; set; }
-
-        public ICommand CancelFetchTestData { get; set; }
 
         public bool ByTimeIsEnabled
         {

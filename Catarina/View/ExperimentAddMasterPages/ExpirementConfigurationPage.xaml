@@ -6,11 +6,17 @@
              xmlns:local="clr-namespace:Catarina.View.ExperimentAddMasterPages"
              xmlns:vm="clr-namespace:Catarina.ViewModel"
              xmlns:w="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:hlp="clr-namespace:Catarina.View.Helpers"
              mc:Ignorable="d"
              CanHelp="False" HelpButtonVisibility="Hidden" PageType="Interior" 
              Title="Настройка параметров проведения тестирования" Description="Выберите необходимые параметры проведения тестироания. Установите интервал измерения параметров и настройте параметры завершения тестирования."
-             CanSelectNextPage="True" >
+             CanSelectNextPage="{Binding DeviceDisconnectionFinished}" >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Enter">
+            <i:InvokeCommandAction Command="{Binding DisconnectDevices}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid  >
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

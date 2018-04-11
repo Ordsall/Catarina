@@ -22,59 +22,27 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <TabControl>
-            <TabItem Header="Автоматическая проверка">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Label Content="Журнал действий:" Padding="0" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                    <RichTextBox x:Name="rtb_Log" IsEnabled="True" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="4" TextChanged="rtb_Log_TextChanged" FontFamily="Consolas" IsReadOnly="True">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run Text="{Binding CheckLog, Mode=TwoWay}"/>
-                            </Paragraph>
-                        </FlowDocument>
-                    </RichTextBox>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Ручная проверка">
-                <Grid>
-                    <Grid Grid.Row="2" Margin="4">
-                        <Grid.Effect>
-                            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
-                        </Grid.Effect>
-                        <Grid.OpacityMask>
-                            <VisualBrush Visual="{Binding ElementName=Border1}" />
-                        </Grid.OpacityMask>
-                        <Grid.Resources>
-                            <Style TargetType="lvc:LineSeries">
-                                <Setter Property="StrokeThickness" Value="1"></Setter>
-                                <Setter Property="Stroke" Value="Black"></Setter>
-                                <Setter Property="Fill" Value="#4EFFFFFF"></Setter>
-                                <Setter Property="PointGeometrySize" Value="0"></Setter>
-                                <Setter Property="LineSmoothness" Value=".3"></Setter>
-                            </Style>
-                            <Style TargetType="lvc:Axis">
-                                <Setter Property="ShowLabels" Value="False"></Setter>
-                                <Setter Property="IsEnabled" Value="True"></Setter>
-                            </Style>
-                        </Grid.Resources>
-                        <Border x:Name="Border1" Grid.Row="0" Grid.RowSpan="4" CornerRadius="5" Background="White" />
-                        <Border Grid.Row="0" Grid.RowSpan="3" Background="White" ></Border>
-                        <lvc:CartesianChart Margin="-4, 0, 0, 0"  Hoverable="False" DataTooltip="{x:Null}" DisableAnimations="True">
-                            <lvc:CartesianChart.Series>
-                                <lvc:LineSeries Values="{Binding Spectrum}" PointGeometry="{x:Null}"></lvc:LineSeries>
-                            </lvc:CartesianChart.Series>
-                            <lvc:CartesianChart.AxisY>
-                                <lvc:Axis MinValue="-100" MaxValue="0" IsEnabled="True" />
-                            </lvc:CartesianChart.AxisY>
-                        </lvc:CartesianChart>
-                    </Grid>
-                </Grid>
-            </TabItem>
-        </TabControl>
-        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+            <Label Content="Журнал действий:" Padding="0" Margin="5,0,0,0" VerticalAlignment="Center"/>
+            <RichTextBox x:Name="rtb_Log" IsEnabled="True" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="4" TextChanged="rtb_Log_TextChanged" FontFamily="Consolas" IsReadOnly="True">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text="{Binding CheckLog, Mode=TwoWay}"/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+
+            <StatusBar Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" Margin="0,0,5,0" HorizontalAlignment="Right"  >
+                <Button x:Name="bt_Rem" BorderThickness="0" Command="{Binding RefreshFetchTestData}" IsEnabled="{Binding IsTestFinish}">
+                    <Image Height="18" Source="/Catarina;component/Resources/Refresh-icon.png"/>
+                </Button>
+            </StatusBar>
+
+        </Grid>
     </Grid>
 </w:WizardPage>

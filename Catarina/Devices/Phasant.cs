@@ -154,7 +154,7 @@ namespace Catarina.Devices
 
        
 
-        public Dictionary<string, object> GetData(IProgress<string> progress = null)
+        public Dictionary<string, object> GetData(IProgress<string> progress = null) //TODO Унаследовать от dict
         {
             if (device.IsConnected)
             {
