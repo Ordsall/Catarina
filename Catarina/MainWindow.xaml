@@ -143,14 +143,14 @@
                    Margin="10"/>
         </Grid>
         <ListBox x:Name="lb_Devices" Grid.Column="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0" Panel.ZIndex="1" Background="Transparent"
-                 ItemTemplate="{StaticResource mt}" ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}"  HorizontalContentAlignment="Stretch" > <!--ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}"--> 
+                 ItemTemplate="{StaticResource mt}" ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}" SelectedItem="{Binding SelectedExperimentModel}"  HorizontalContentAlignment="Stretch" > <!--ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}"--> 
         </ListBox>
 
         <StatusBar Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Background="White" >
             <Button x:Name="bt_Add" BorderThickness="0" Click="bt_Add_Click"  >
                 <Image Height="18" Source="Resources/device_add.png"/>
             </Button>
-            <Button x:Name="bt_Rem" BorderThickness="0" Click="bt_Rem_Click" >
+            <Button x:Name="bt_Rem" BorderThickness="0" Command="{Binding RemoveExperimentModel}">
                 <Image Height="18" Source="Resources/device_remove.png"/>
             </Button>
         </StatusBar>

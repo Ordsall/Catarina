@@ -12,9 +12,15 @@ namespace Catarina.ViewModel
 {
     public class ExperimentModel : ViewModelBase, IDisposable
     {
+        Components.CsvFile result_file;
+
         public ExperimentModel(ViewModel.ExpirementAddMasterModel ModelFrom)
         {
             start_time = DateTime.Now;
+
+            result_file = new Components.CsvFile(String.Format("{0}{1}{2}_{3}{4}{5}.csv",
+                start_time.Day, start_time.Month, start_time.Year, start_time.Hour, start_time.Minute, start_time.Second));
+
             State = "Ожидание";
             SelectedDevice = ModelFrom.selectedDeviceFactory;
             Environment = ModelFrom.selecteEnvironmentModel;
@@ -35,6 +41,8 @@ namespace Catarina.ViewModel
 
             ExpirementData.Clear();
             var h = device.GetHeaders();
+            var sss = h.Select(val => val.Key).ToArray<string>();
+            result_file.WriteHeaders(sss);
             foreach (var header in h)
             {
                 LineSeries l = new LineSeries() { Title = header.Key, Values = new ChartValues<double>() };
@@ -86,6 +94,7 @@ namespace Catarina.ViewModel
             {
                 ExpirementData[item.Key].Values.Add(item.Value);
             }
+            result_file.Write(e.Select(val => val.Value).ToArray<double>());
         }
 
         public SeriesCollection ExpirementData { get; set; } = new SeriesCollection { };

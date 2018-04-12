@@ -39,12 +39,6 @@ namespace Catarina
             ViewModel.ExpirementAddMasterModel.Save(Master.DataContext as ViewModel.ExpirementAddMasterModel);
         }
 
-        private void bt_Rem_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Instance.Expirements.Remove(lb_Devices.SelectedItem as ViewModel.ExperimentModel);
-            (lb_Devices.SelectedItem as ViewModel.ExperimentModel).Dispose();
-        }
-
         private void mi_EnvConf_Click(object sender, RoutedEventArgs e)
         {
             View.EnvironmentSetup es = new View.EnvironmentSetup();

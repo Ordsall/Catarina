@@ -41,8 +41,6 @@ namespace Catarina.View
             {
                 ViewModel.Instance.Environments.Add((EnvAdd.DataContext as ViewModel.EnvironmentAddMasterModel).Environment);
             }
-
-            { }
         }
 
         private void bt_Rem_Click(object sender, RoutedEventArgs e)

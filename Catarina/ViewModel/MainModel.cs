@@ -7,41 +7,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Catarina.ViewModel
 {
     static public class Instance
     {
         static JsonSerializer serializer = new JsonSerializer();
-
-        public static void Test()
-        {
-            Progress<string> _Progress = new Progress<string>();
-            _Progress.ProgressChanged += _Progress_ProgressChanged;
-
-            var Settings = new Interfaces.SerialSettings("COM7");
-            var imf = new Devices.Sapsan3Factory(Settings);
-            var im = imf.Build();
-
-            im.Connect();
-            im.Speed = 60;
-            im.Enable();
-
-            var s = im.Serial;
-
-            Settings = new Interfaces.SerialSettings("COM6");
-            var v = new Devices.BOctopustFactory(Settings);
-            var dev = v.Build();
-            dev.Connect();
-            var ser = dev.SerialNumber;
-            var task = dev.GetData(_Progress);
-
-        }
-
-        private static void _Progress_ProgressChanged(object sender, string e)
-        {
-            { }
-        }
 
         static Instance()
         {
@@ -106,5 +78,19 @@ namespace Catarina.ViewModel
             System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
             System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
             );
+
+        public ViewModel.ExperimentModel SelectedExperimentModel { get; set; }
+
+        public ICommand RemoveExperimentModel { get; set; }
+
+        public MainModel()
+        {
+            RemoveExperimentModel = new ViewModel.RelayCommand(o =>
+            {
+                SelectedExperimentModel.Dispose();
+                Instance.Expirements.Remove(SelectedExperimentModel);
+                SelectedExperimentModel = null;
+            }, o => SelectedExperimentModel != null);
+        }
     }
 }
