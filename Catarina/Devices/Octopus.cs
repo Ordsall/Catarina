@@ -40,6 +40,11 @@ namespace Catarina.Devices
     class Octopus : Interfaces.IDevice
     {
 
+        public Dictionary<string, int> GetHeaders()
+        {
+            return new Dictionary<string, int>() { { "Амплитуда", 0 }, { "Скорость", 0 }, { "Угловая координата", 0 }, { "Расстояние", 0 } };
+        }
+
         public Octopus(OctopusFactory Factory, SerialSettings Settings)
         {
             DeviceType = Factory;

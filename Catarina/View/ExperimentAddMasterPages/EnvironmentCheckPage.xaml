@@ -26,7 +26,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="26"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
             <Label Content="Журнал действий:" Padding="0" Margin="5,0,0,0" VerticalAlignment="Center"/>
             <RichTextBox x:Name="rtb_Log" IsEnabled="True" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="4" TextChanged="rtb_Log_TextChanged" FontFamily="Consolas" IsReadOnly="True">
@@ -37,11 +37,21 @@
                 </FlowDocument>
             </RichTextBox>
 
-            <StatusBar Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" Margin="0,0,5,0" HorizontalAlignment="Right"  >
-                <Button x:Name="bt_Rem" BorderThickness="0" Command="{Binding RefreshFetchTestData}" IsEnabled="{Binding IsTestFinish}">
-                    <Image Height="18" Source="/Catarina;component/Resources/Refresh-icon.png"/>
+ 
+            <StackPanel Margin="0,0,5,0" Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" >
+                <Button x:Name="bt_Rem" BorderThickness="0" Command="{Binding RefreshFetchTestData}" IsEnabled="{Binding IsTestFinish}" Margin="5">
+                    <Grid>
+                        <Image Height="18" Source="/Catarina;component/Resources/Refresh-icon.png"/>
+                        <Border BorderThickness="1" BorderBrush="Black" Margin="-2"/>
+                    </Grid>
                 </Button>
-            </StatusBar>
+            </StackPanel>
+
+            <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Grid.Row="2" Grid.Column="0" >
+                <Button Content="Спектрометер" Margin="4" IsEnabled="{Binding IsTestFinish}" Click="bt_Spec_Click" Width="100" />
+                <Button Content="Эхограф" Margin="4" IsEnabled="{Binding IsTestFinish}" Click="bt_Echo_Click" Width="72"/>
+            </StackPanel>
+
 
         </Grid>
     </Grid>

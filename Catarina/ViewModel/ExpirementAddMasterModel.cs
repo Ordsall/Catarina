@@ -192,18 +192,22 @@ namespace Catarina.ViewModel
             Task.Factory.StartNew(() =>
             {
                 progress.Report(Enumerable.Empty<double>());
+                if (!imitator.IsConnected) { imitator.Connect(); }
                 try { imitator.Enable(); } catch (Exception) { }
+                try { imitator.Speed = 60; } catch (Exception) { }
                 
                 try { if (device is Interfaces.IFlowable) { (device as Interfaces.IFlowable).DisableFlow(); } } catch (Exception) { }
                 while (!CancelSampling.IsCancellationRequested)
                 {
                     try
                     {
-                        if (!imitator.IsConnected) { imitator.Connect(); }
                         if (!device.IsConnected) { device.Connect(); }
+                        
                         if (device is Interfaces.ISpectrum)
                         {
                             var spectrum = (device as Interfaces.ISpectrum).GetSpectrum();
+                            Signal = (device as Interfaces.ISpectrum).GetSignal();
+                            Noize = (device as Interfaces.ISpectrum).GetNoize();
                             progress.Report(spectrum);
                         }
                     }
@@ -240,6 +244,29 @@ namespace Catarina.ViewModel
             });
         }
 
+        
+
+        double signal = 0;
+
+        public double Signal
+        {
+            get => signal;
+            set { signal = value; OnPropertyChanged(nameof(Signal)); OnPropertyChanged(nameof(SignalNoize)); }
+        }
+
+        double noize = 0;
+
+        public double Noize
+        {
+            get => noize;
+            set { noize = value; OnPropertyChanged(nameof(Noize)); OnPropertyChanged(nameof(SignalNoize)); }
+        }
+
+        public double SignalNoize
+        {
+            get => signal / noize;
+        }
+
 
         public static bool IsWithin(int value, int minimum, int maximum)
         {
@@ -260,10 +287,19 @@ namespace Catarina.ViewModel
 
         public ICommand CloseMaster { get; set; }
 
+        public ICommand EnableImitation { get; set; }
+
+        public ICommand DisableImitation { get; set; }
+
+        public ICommand FetchEchogramm { get; set; }
+
+        public ICommand CancelFetchEchogramm { get; set; }
+
         public ExpirementAddMasterModel()
         {
             progress.ProgressChanged += Progress_ProgressChanged;
             SpectrumProgress.ProgressChanged += SpectrumProgress_ProgressChanged;
+            EchographProgress.ProgressChanged += EchographProgress_ProgressChanged;
 
             FetchTestData = new ViewModel.RelayCommand(o =>
             {
@@ -310,6 +346,65 @@ namespace Catarina.ViewModel
             {
                 CloseMasterRequest();
             }, o => true);
+
+            EnableImitation = new ViewModel.RelayCommand(o =>
+            {
+                try { imitator.Enable(); } catch (Exception) { }
+            }, o => true);
+
+            DisableImitation = new ViewModel.RelayCommand(o =>
+            {
+                try { imitator.Disable(); } catch (Exception) { }
+            }, o => true);
+
+            FetchEchogramm = new ViewModel.RelayCommand(o =>
+            {
+                if(device != null && device is Interfaces.IFlowable)
+                {
+                    EchographData.Clear();
+                    var h = device.GetHeaders();
+                    foreach (var header in h)
+                    {
+                        LineSeries l = new LineSeries() { Title = header.Key, Values = new ChartValues<double>() };
+                        l.Values.AddRange(Enumerable.Repeat<object>(double.NaN, 150));
+                        EchographData.Add(l);
+                    }
+                    Task.Factory.StartNew(()=> { try { imitator.Enable(); } catch (Exception) { }; try { (device as Interfaces.IFlowable).EnableFlow();  } catch (Exception) { } });
+                    (device as Interfaces.IFlowable).ParametersChanged += ExpirementAddMasterModel_ParametersChanged;
+                }
+            }, o => true);
+
+            CancelFetchEchogramm = new ViewModel.RelayCommand(o =>
+            {
+                if (device != null && device is Interfaces.IFlowable)
+                {
+                    Task.Factory.StartNew(() => { try { imitator.Disable(); } catch (Exception) { }; try { (device as Interfaces.IFlowable).DisableFlow(); } catch (Exception) { } });
+                    (device as Interfaces.IFlowable).ParametersChanged -= ExpirementAddMasterModel_ParametersChanged;
+                }
+            }, o => true);
+        }
+
+        private void EchographProgress_ProgressChanged(object sender, Dictionary<int, double> e)
+        {
+            foreach (var item in e)
+            {
+                EchographData[item.Key].Values.Add(item.Value);
+                EchographData[item.Key].Values.RemoveAt(0);
+            }
+        }
+
+        Progress<Dictionary<int, double>> EchographProgress = new Progress<Dictionary<int, double>>();
+
+        public SeriesCollection EchographData { get; set; } = new SeriesCollection { };
+
+        private void ExpirementAddMasterModel_ParametersChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                IProgress<Dictionary<int, double>> prog = EchographProgress;
+                prog.Report((e as Interfaces.ParametersChangedArgs).Parameters);
+            }
+            catch (Exception) { }           
         }
 
         private void SpectrumProgress_ProgressChanged(object sender, IEnumerable<double> e)
@@ -328,7 +423,7 @@ namespace Catarina.ViewModel
 
         bool _deviceDisconnectionFinished = true;
 
-        public bool DeviceDisconnectionFinished
+        public bool DeviceDisconnectionFinished //TODO Сделать статусы для обоих устройств и отслеживать по ним
         {
             get => _deviceDisconnectionFinished;
             set { _deviceDisconnectionFinished = value; OnPropertyChanged(nameof(DeviceDisconnectionFinished)); }

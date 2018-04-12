@@ -119,9 +119,21 @@ namespace Catarina.Devices
         {
             this.Detectors = Detectors;
             Speed = Detectors[7].Speed;
+
+            Dictionary<int, double> ptemp = new Dictionary<int, double>();
+
+            ptemp.Add(0, Detectors[7].Amp);
+            ptemp.Add(1, Detectors[7].Speed);
+            ptemp.Add(2, Detectors[7].Angle);
+            ptemp.Add(3, Detectors[7].Distance);
+      
+
+            ParametersChanged?.Invoke(this, new ParametersChangedArgs() { Parameters = ptemp });
         }
 
         Olvia.Devices.pheasant.Device _dev = new Olvia.Devices.pheasant.Device();
+
+        public event EventHandler ParametersChanged;
 
         public string SerialNumber
         {
@@ -187,29 +199,21 @@ namespace Catarina.Devices
                 progress?.Report("Включение потокового режима");
                 device.EnableFlow();
 
-                Double? fist_speed = 0;
                 while (Detectors == null) { System.Threading.Thread.Sleep(100); }
 
                 progress?.Report("Набор данных");
-                fist_speed = Detectors[7].Speed;
-
-
-
 
                 int div = 0;
 
                 for (int i = 0; i < 10; i++)
                 {
-                    if (fist_speed == Detectors[7].Speed)
-                    {
-                        if (Detectors[7].Distance > 0) det.Angle += (-Detectors[7].Angle);
-                        else det.Angle += Detectors[7].Angle;
+                    if (Detectors[7].Distance > 0) det.Angle += (-Detectors[7].Angle);
+                    else det.Angle += Detectors[7].Angle;
 
-                        det.Amp += Detectors[7].Amp;
-                        det.Distance += Detectors[7].Distance;
-                        det.Speed += Detectors[7].Speed;
-                        div++;
-                    }
+                    det.Amp += Detectors[7].Amp;
+                    det.Distance += Detectors[7].Distance;
+                    det.Speed += Detectors[7].Speed;
+                    div++;
                 }
 
                 det.Amp /= div;
@@ -251,6 +255,17 @@ namespace Catarina.Devices
             Buffer.BlockCopy(d, 0, tmp, 0, tmp.Length * sizeof(double));
             List<double> list = new List<double>(tmp);
             return list;
+        }
+
+        public double GetSignal() {
+            return device.Signal[0]; }
+
+        public double GetNoize() {
+            return device.Noise[0]; }
+
+        public Dictionary<string, int> GetHeaders()
+        {
+            return new Dictionary<string, int>() { { "Амплитуда", 0 }, { "Скорость", 1 }, { "Угловая координата", 2 }, { "Расстояние", 3 } };
         }
     }
 }

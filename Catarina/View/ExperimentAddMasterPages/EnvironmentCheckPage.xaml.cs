@@ -29,5 +29,22 @@ namespace Catarina.View.ExperimentAddMasterPages
         {
             rtb_Log.ScrollToEnd();
         }
+
+        private void bt_Echo_Click(object sender, RoutedEventArgs e)
+        {
+            View.Echograph ech = new View.Echograph();
+            ech.DataContext = this.DataContext;
+            ech.Owner = Window.GetWindow(this);
+            ech.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            ech.ShowDialog();
+        }
+
+        private void bt_Spec_Click(object sender, RoutedEventArgs e)
+        {
+            View.Spectrometer spec = new View.Spectrometer();
+            spec.DataContext = this.DataContext;
+            spec.Owner = Window.GetWindow(this);
+            spec.ShowDialog();
+        }
     }
 }

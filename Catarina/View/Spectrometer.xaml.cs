@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Catarina.View.ExperimentAddMasterPages
+namespace Catarina.View
 {
     /// <summary>
-    /// Логика взаимодействия для ExpirementSamplingPage.xaml
+    /// Логика взаимодействия для Spectrometer.xaml
     /// </summary>
-    public partial class ExpirementSamplingPage : Xceed.Wpf.Toolkit.WizardPage
+    public partial class Spectrometer : Window
     {
-        public ExpirementSamplingPage()
+        public Spectrometer()
         {
             InitializeComponent();
         }

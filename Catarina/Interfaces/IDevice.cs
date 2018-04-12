@@ -11,6 +11,8 @@ namespace Catarina.Interfaces
 
         Dictionary<string, object> GetData(IProgress<string> progress = null);
 
+        Dictionary<string, int> GetHeaders();
+
         string SerialNumber { get; }
 
         string Type { get; }
@@ -28,9 +30,16 @@ namespace Catarina.Interfaces
 
     }
 
+    public class ParametersChangedArgs : EventArgs
+    {
+        public Dictionary<int, double> Parameters = new Dictionary<int, double>();
+    }
+
     public interface IFlowable
     {
         void EnableFlow();
+
+        event EventHandler ParametersChanged;
 
         void DisableFlow();
     }
@@ -38,5 +47,9 @@ namespace Catarina.Interfaces
     public interface ISpectrum
     {
         IEnumerable<double> GetSpectrum();
+
+        double GetSignal();
+
+        double GetNoize();
     }
 }

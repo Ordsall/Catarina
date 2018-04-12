@@ -133,6 +133,9 @@
     <Compile Include="View\DeviceSelectView.xaml.cs">
       <DependentUpon>DeviceSelectView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Echograph.xaml.cs">
+      <DependentUpon>Echograph.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EnvironmentAddMaster.xaml.cs">
       <DependentUpon>EnvironmentAddMaster.xaml</DependentUpon>
     </Compile>
@@ -160,9 +163,6 @@
     <Compile Include="View\ExperimentAddMasterPages\ExpirementConfigurationPage.xaml.cs">
       <DependentUpon>ExpirementConfigurationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ExperimentAddMasterPages\ExpirementSamplingPage.xaml.cs">
-      <DependentUpon>ExpirementSamplingPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ExperimentView.xaml.cs">
       <DependentUpon>ExperimentView.xaml</DependentUpon>
     </Compile>
@@ -173,6 +173,9 @@
     <Compile Include="View\Helpers\BoolToVisibilityConverter.cs" />
     <Compile Include="View\Helpers\DialogCloser.cs" />
     <Compile Include="View\Helpers\EnumConverter.cs" />
+    <Compile Include="View\Spectrometer.xaml.cs">
+      <DependentUpon>Spectrometer.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -190,6 +193,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DeviceSelectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Echograph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -229,15 +236,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ExperimentAddMasterPages\ExpirementSamplingPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\ExperimentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ExperimentAddMaster.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Spectrometer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -310,6 +317,13 @@
       <Project>{26ca6fcc-df37-49be-bb16-628d783885a9}</Project>
       <Name>Sapsan3</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Data-Line-Chart-icon.png" />
+    <Resource Include="Resources\gauge-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Line-chart-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" />
