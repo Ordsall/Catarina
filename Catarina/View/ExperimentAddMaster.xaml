@@ -20,14 +20,20 @@
         <w:Wizard x:Name="MWizard"  FinishButtonClosesWindow="True" CancelButtonVisibility="Visible" TextOptions.TextFormattingMode="Display"
                   HelpButtonContent="Справка" NextButtonContent="Далее" BackButtonContent="Назад" FinishButtonContent="Готово" CancelButtonContent="Отмена" >
             <w:WizardPage CanHelp="False" HelpButtonVisibility="Hidden"
-                Title="Добро пожаловать в мастер создания нового теста" Description="Мастер поможет вам создать новый, настроить его и добавить в текущую конфигурацию." />
+                Title="Добро пожаловать в мастер создания нового теста" Description="Мастер поможет вам создать новый тест, настроить его и добавить в текущую конфигурацию." />
             <ms:EnvironmentChoisePage x:Name="wpg_ExpSelect" DataContext="{Binding}"/>
             <ms:DeviceSelectPage x:Name="wpg_DevSelect" DataContext="{Binding}"/>
             <ms:ExpirementConfigurationPage x:Name="wpg_EnvConf" DataContext="{Binding}"/>
             <ms:EnvironmentCheckPage x:Name="wpg_EnvCheck" DataContext="{Binding}"/>
             <w:WizardPage PageType="Interior" CanFinish="True" CanSelectPreviousPage="False" CanCancel="False" CanHelp="False" HelpButtonVisibility="Hidden"
                           Title="Тест успешно создан"
-                          Description="Создание теста закончено" />
+                          Description="Создание теста закончено">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Enter">
+                        <i:InvokeCommandAction Command="{Binding AddExpToTesting}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </w:WizardPage>
         </w:Wizard>
     </Grid>
 </Window>

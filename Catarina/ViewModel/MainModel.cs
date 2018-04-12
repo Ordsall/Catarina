@@ -92,6 +92,8 @@ namespace Catarina.ViewModel
 
         public static ObservableCollection<ViewModel.EnvironmentModel> Environments { get; set; } = new ObservableCollection<EnvironmentModel>();
 
+        public static ObservableCollection<ViewModel.ExperimentModel> Expirements { get; set; } = new ObservableCollection<ExperimentModel>();
+
         public static MainModel InstanceModel { get; set; } = new MainModel();
     }
 
@@ -104,9 +106,5 @@ namespace Catarina.ViewModel
             System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
             System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
             );
-
-        public ObservableCollection<ExperimentModel> Experiments { get; set; } = new ObservableCollection<ExperimentModel>();
-
-
     }
 }

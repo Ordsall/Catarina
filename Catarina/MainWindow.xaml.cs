@@ -41,7 +41,8 @@ namespace Catarina
 
         private void bt_Rem_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.Instance.InstanceModel.Experiments.Remove(lb_Devices.SelectedItem as ViewModel.ExperimentModel);
+            ViewModel.Instance.Expirements.Remove(lb_Devices.SelectedItem as ViewModel.ExperimentModel);
+            (lb_Devices.SelectedItem as ViewModel.ExperimentModel).Dispose();
         }
 
         private void mi_EnvConf_Click(object sender, RoutedEventArgs e)

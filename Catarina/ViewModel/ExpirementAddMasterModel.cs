@@ -295,6 +295,8 @@ namespace Catarina.ViewModel
 
         public ICommand CancelFetchEchogramm { get; set; }
 
+        public ICommand AddExpToTesting { get; set; }
+
         public ExpirementAddMasterModel()
         {
             progress.ProgressChanged += Progress_ProgressChanged;
@@ -369,7 +371,7 @@ namespace Catarina.ViewModel
                         l.Values.AddRange(Enumerable.Repeat<object>(double.NaN, 150));
                         EchographData.Add(l);
                     }
-                    Task.Factory.StartNew(()=> { try { imitator.Enable(); } catch (Exception) { }; try { (device as Interfaces.IFlowable).EnableFlow();  } catch (Exception) { } });
+                    Task.Factory.StartNew(()=> { try { imitator.Speed = 60; imitator.Enable(); } catch (Exception) { }; try { (device as Interfaces.IFlowable).EnableFlow();  } catch (Exception) { } });
                     (device as Interfaces.IFlowable).ParametersChanged += ExpirementAddMasterModel_ParametersChanged;
                 }
             }, o => true);
@@ -381,6 +383,11 @@ namespace Catarina.ViewModel
                     Task.Factory.StartNew(() => { try { imitator.Disable(); } catch (Exception) { }; try { (device as Interfaces.IFlowable).DisableFlow(); } catch (Exception) { } });
                     (device as Interfaces.IFlowable).ParametersChanged -= ExpirementAddMasterModel_ParametersChanged;
                 }
+            }, o => true);
+
+            AddExpToTesting = new ViewModel.RelayCommand(o =>
+            {
+                Instance.Expirements.Add(new ExperimentModel(this));
             }, o => true);
         }
 

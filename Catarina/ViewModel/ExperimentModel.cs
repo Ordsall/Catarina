@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catarina.ViewModel
 {
-    public class ExperimentModel : ViewModelBase
+    public class ExperimentModel : ViewModelBase, IDisposable
     {
         public ExperimentModel(ViewModel.ExpirementAddMasterModel ModelFrom)
         {
@@ -22,6 +22,7 @@ namespace Catarina.ViewModel
                     break;
             }
             FetchSpan = ModelFrom.FetchSpan;
+            Environment.IsBusy = true;
         }
 
         public TimeSpan FetchSpan { get; set; } = TimeSpan.FromMinutes(5);
@@ -32,8 +33,9 @@ namespace Catarina.ViewModel
 
         public Interfaces.IDeviceFactory SelectedDevice { get; set; }
 
-
-
-
+        public void Dispose()
+        {
+            Environment.IsBusy = false;
+        }
     }
 }

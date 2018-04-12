@@ -90,7 +90,7 @@
                         <Label Content="dB" FontFamily="Consolas" FontSize="14"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Label Content="SNR:" FontFamily="Consolas" FontSize="14"/>
+                        <Label Content="Сигнал/Шум:" FontFamily="Consolas" FontSize="14"/>
                         <Label>
                             <TextBlock FontFamily="Consolas" FontSize="14" Text="{Binding SignalNoize, StringFormat=\{0:n2\}}" HorizontalAlignment="Center"/>
                         </Label>
