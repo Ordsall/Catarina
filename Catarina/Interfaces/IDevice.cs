@@ -9,7 +9,7 @@ namespace Catarina.Interfaces
     public interface IDevice
     {
 
-        Dictionary<string, object> GetData(IProgress<string> progress = null);
+        Dictionary<int, double> GetData(IProgress<string> progress = null);
 
         Dictionary<string, int> GetHeaders();
 

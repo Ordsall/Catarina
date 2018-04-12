@@ -264,7 +264,7 @@ namespace Catarina.ViewModel
 
         public double SignalNoize
         {
-            get => signal / noize;
+            get => signal - noize;
         }
 
 

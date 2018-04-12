@@ -166,11 +166,11 @@ namespace Catarina.Devices
 
        
 
-        public Dictionary<string, object> GetData(IProgress<string> progress = null) //TODO Унаследовать от dict
+        public Dictionary<int, double> GetData(IProgress<string> progress = null) //TODO Унаследовать от dict
         {
             if (device.IsConnected)
             {
-                var d = new Dictionary<string, object>();
+                var d = new Dictionary<int, double>();
 
                 progress?.Report("Снятие уровня шума");
 
@@ -179,7 +179,7 @@ namespace Catarina.Devices
 
                 Double noize = (device.Noise[0] + device.Noise[0] + device.Noise[0] + device.Noise[0]) / 4;
 
-                d.Add("Уровень шума", noize);
+                //d.Add("Уровень шума", noize);
 
                 Olvia.Devices.pheasant.Detector det = new Olvia.Devices.pheasant.Detector();
 
@@ -224,10 +224,10 @@ namespace Catarina.Devices
                 progress?.Report("Выключение потокового режима");
                 device.DisableFlow();
 
-                d.Add("Уровень сигнала", det.Amp);
-                d.Add("Расстояние", det.Distance);
-                d.Add("Угловая координата", det.Angle);
-                d.Add("Скорость", det.Speed);
+                d.Add(0, det.Amp);
+                d.Add(1, det.Speed);
+                d.Add(2, det.Angle);
+                d.Add(3, det.Distance);
 
 
                 return d;

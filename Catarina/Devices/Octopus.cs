@@ -42,7 +42,7 @@ namespace Catarina.Devices
 
         public Dictionary<string, int> GetHeaders()
         {
-            return new Dictionary<string, int>() { { "Амплитуда", 0 }, { "Скорость", 0 }, { "Угловая координата", 0 }, { "Расстояние", 0 } };
+            return new Dictionary<string, int>() { { "Амплитуда", 0 }, { "Скорость", 1 }, { "Угловая координата", 2 }, { "Расстояние", 3 } };
         }
 
         public Octopus(OctopusFactory Factory, SerialSettings Settings)
@@ -99,18 +99,18 @@ namespace Catarina.Devices
 
         }
 
-        Dictionary<string, object> IDevice.GetData(IProgress<string> progress)
+        Dictionary<int, double> IDevice.GetData(IProgress<string> progress)
         {
 
             if (PhDevice.IsConnected)
             {
-                var d = new Dictionary<string, object>();
+                var d = new Dictionary<int, double>();
 
                 progress?.Report("Снятие уровня шума");
 
                 Double noize = (PhDevice.Noise[0] + PhDevice.Noise[0] + PhDevice.Noise[0] + PhDevice.Noise[0]) / 4;
 
-                d.Add("Уровень шума", noize);
+                //d.Add("Уровень шума", noize);
 
                 Olvia.Devices.pheasant.Detector det = new Olvia.Devices.pheasant.Detector();
 
@@ -163,10 +163,12 @@ namespace Catarina.Devices
                 progress?.Report("Выключение потокового режима");
                 PhDevice.DisableFlow();
 
-                d.Add("Уровень сигнала", det.Amp);
-                d.Add("Расстояние", det.Distance);
-                d.Add("Угловая координата", det.Angle);
-                d.Add("Скорость", det.Speed);
+                d.Add(0, det.Amp);
+                d.Add(1, det.Speed);
+                d.Add(2, det.Angle);
+                d.Add(3, det.Distance);
+
+
 
 
                 return d;

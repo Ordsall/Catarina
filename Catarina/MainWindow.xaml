@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Catarina"
         xmlns:vm="clr-namespace:Catarina.ViewModel"
         xmlns:v="clr-namespace:Catarina.View"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="{Binding Title}"
         Height="600" Width="800" Icon="Resources/hot-icon.png">
@@ -21,23 +22,98 @@
             </v:ExperimentView>-->
             <Grid HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="270"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="270"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" MaxHeight="60"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Border Margin="5" BorderBrush="Black" BorderThickness="1" Grid.Row="0">
-                    <Label Content="{Binding Environment.Number}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" />
+                <Border Height="55" Width="55" Margin="5" Grid.Column="0" Grid.Row="0" BorderThickness="1" BorderBrush="Gray" Background="LightSteelBlue" CornerRadius="5">
+                    <Label Content="{Binding Environment.Number}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontFamily="Consolas"/>
                 </Border>
-
-                <StackPanel Grid.Column="1" Margin="5" Grid.Row="0" Grid.RowSpan="2">
-                    <StackPanel Orientation="Horizontal" TextBlock.FontWeight="Bold" >
-                        <TextBlock Text="{Binding Path=Environment.Title, FallbackValue=Камера 1}" />
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="{Binding Environment.Title}" FontFamily="Consolas" FontWeight="Bold" Padding="2" Grid.Row="1" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="2"  >
+                        <Label Content="Имитатор:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding Environment.Imitator.DeviceInfo}" Padding="2"/>
+                        <Label FontFamily="Consolas" Content="{Binding ImitatorSerial}" Padding="2"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding Path=Environment.Imitator.DeviceInfo, FallbackValue=Не определено}"/>
-                </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3"  >
+                        <Label Content="Модуль:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding SelectedDevice.DeviceInfo}" Padding="2"/>
+                        <Label FontFamily="Consolas" Content="{Binding DeviceSerial}" Padding="2"/>
+                    </StackPanel>
+                </Grid>
+                <Separator Grid.Column="1" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                <Separator Grid.Column="3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                <Grid Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1"  >
+                        <Label Content="До завершения теста:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TimeLeft}" Padding="2" ContentStringFormat="{}{0:hh}:{0:mm}:{0:ss}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2"  >
+                        <Label Content="До следующего измерения:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TimeFetchLeft}" Padding="2" ContentStringFormat="{}{0:hh}:{0:mm}:{0:ss}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3"  >
+                        <Label Content="Статус:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding State}" Padding="2"/>
+                    </StackPanel>
+                </Grid>
+                <Expander ExpandDirection="Down" IsExpanded="False" Header="" Grid.Row="1" Margin="0,-22,0,0" Grid.ColumnSpan="6">
+                    <Grid Margin="5" HorizontalAlignment="Stretch" Height="100">
+                        <Grid.Effect>
+                            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
+                        </Grid.Effect>
+                        <Grid.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=Border1}" />
+                        </Grid.OpacityMask>
+                        <Grid.Resources>
+                            <Style TargetType="lvc:LineSeries">
+                                <Setter Property="StrokeThickness" Value="1"></Setter>
+                                <Setter Property="Fill" Value="Transparent"></Setter>
+                                <Setter Property="PointGeometrySize" Value="0"></Setter>
+                                <Setter Property="LineSmoothness" Value=".5"></Setter>
+                            </Style>
+                            <Style TargetType="lvc:Axis">
+                                <Setter Property="ShowLabels" Value="False"></Setter>
+                                <Setter Property="IsEnabled" Value="True"></Setter>
+                            </Style>
+                        </Grid.Resources>
+                        <Border x:Name="Border1" Grid.Row="0" CornerRadius="5" Background="White" Grid.ColumnSpan="2" Grid.RowSpan="5" />
+                        <Border Grid.Row="0" Background="White" Grid.ColumnSpan="2" Grid.RowSpan="4" />
+                        <lvc:CartesianChart Margin="0, 0, 0, 0" LegendLocation="Bottom" DataTooltip="{x:Null}"   Series="{Binding ExpirementData}"  Hoverable="False" DisableAnimations="True" Grid.ColumnSpan="2" Grid.RowSpan="4">
+                            <!--<lvc:CartesianChart.AxisX>
+                                a small visual improvement, lets hide the first points (x = 0, x=1) to get better animations
+                                <lvc:Axis MinValue="2" ShowLabels="True"></lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                a small visual improvement, lets hide the first points (x = 0, x=1) to get better animations
+                                <lvc:Axis ShowLabels="True"></lvc:Axis>
+                            </lvc:CartesianChart.AxisY>-->
+                        </lvc:CartesianChart>
+                    </Grid>
+                </Expander>
+                
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -67,7 +143,7 @@
                    Margin="10"/>
         </Grid>
         <ListBox x:Name="lb_Devices" Grid.Column="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0" Panel.ZIndex="1" Background="Transparent"
-                 ItemTemplate="{StaticResource mt}" ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}" >
+                 ItemTemplate="{StaticResource mt}" ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}"  HorizontalContentAlignment="Stretch" > <!--ItemsSource="{Binding Source={x:Static vm:Instance.Expirements}}"--> 
         </ListBox>
 
         <StatusBar Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Background="White" >
