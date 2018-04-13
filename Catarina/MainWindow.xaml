@@ -88,7 +88,7 @@
             <RowDefinition Height="21"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Menu Grid.Column="0" Grid.Row="0">
             <MenuItem Header="Файл">
