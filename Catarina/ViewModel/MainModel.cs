@@ -73,7 +73,15 @@ namespace Catarina.ViewModel
             System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
             );
 
-        public ViewModel.ExperimentModel SelectedExperimentModel { get; set; }
+        ViewModel.ExperimentModel selectedExperimentModel = null;
+
+        public ViewModel.ExperimentModel SelectedExperimentModel
+        {
+            get => selectedExperimentModel;
+            set { selectedExperimentModel = value; OnPropertyChanged(nameof(SelectedExperimentModel)); }
+        }
+
+      
 
         public ICommand RemoveExperimentModel { get; set; }
 

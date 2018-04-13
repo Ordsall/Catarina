@@ -223,19 +223,24 @@ namespace Catarina.ViewModel
 
         Progress<List<Interfaces.IParameter>> DataProgress = new Progress<List<Interfaces.IParameter>>();
 
+        int maxtrycount = 5;
+
         void fetchData(IProgress<string> message_progress, IProgress<List<Interfaces.IParameter>> data)
         {
             Task.Factory.StartNew(() =>
             {
+                int trycount = 0;
+
                 IsFetching = true;
 
                 if (imitator == null) { imitator = Environment.Imitator.Build(); }
                 if (device == null) { device = SelectedDevice.Build(); }
 
+                trycount = 0;
                 bool SucessStep = false;
                 if (!imitator.IsConnected)
                 {
-                    while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                    while (!SucessStep && !CancelTesting.IsCancellationRequested && trycount <= maxtrycount)
                     {
                         message_progress?.Report("Попытка подключения к имитатору");
                         try
@@ -246,11 +251,13 @@ namespace Catarina.ViewModel
                         }
                         catch (Exception) { message_progress?.Report("Ошибка подключения к имитатору"); }
                         System.Threading.Thread.Sleep(500);
+                        trycount++;
                     }
                 }
 
+                if (trycount <= maxtrycount) { trycount = 0; }
                 SucessStep = false;
-                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                while (!SucessStep && !CancelTesting.IsCancellationRequested && trycount <= maxtrycount)
                 {
                     message_progress?.Report("Установка параметров имитации");
                     try
@@ -262,12 +269,14 @@ namespace Catarina.ViewModel
                     }
                     catch (Exception) { message_progress?.Report("Ошибка установки параметров имитации"); }
                     System.Threading.Thread.Sleep(500);
+                    trycount++;
                 }
 
+                if (trycount <= maxtrycount) { trycount = 0; }
                 SucessStep = false;
                 if (!device.IsConnected)
                 {
-                    while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                    while (!SucessStep && !CancelTesting.IsCancellationRequested && trycount <= maxtrycount)
                     {
                         message_progress?.Report("Попытка подключения к устройству");
                         try
@@ -278,11 +287,13 @@ namespace Catarina.ViewModel
                         }
                         catch (Exception) { message_progress?.Report("Подключение к устройству не удалось"); }
                         System.Threading.Thread.Sleep(500);
+                        trycount++;
                     }
                 }
 
+                if (trycount <= maxtrycount) { trycount = 0; }
                 SucessStep = false;
-                while (!SucessStep && !CancelTesting.IsCancellationRequested)
+                while (!SucessStep && !CancelTesting.IsCancellationRequested && trycount <= maxtrycount)
                 {
                     message_progress?.Report("Включение имитации");
                     imitator.Enable();
@@ -301,6 +312,7 @@ namespace Catarina.ViewModel
                     }
                     catch (Exception) { }
                     System.Threading.Thread.Sleep(500);
+                    trycount++;
                 }
 
                 message_progress?.Report("Ожидание");

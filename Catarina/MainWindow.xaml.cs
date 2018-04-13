@@ -45,5 +45,29 @@ namespace Catarina
             es.Owner = this;
             es.ShowDialog();
         }
+
+        
+
+        private void bt_PlotVisible_Click(object sender, RoutedEventArgs e)
+        {
+            if (gr_Plot.Visibility == Visibility.Visible) { gr_Plot.Visibility = Visibility.Collapsed; }
+            else { gr_Plot.Visibility = Visibility.Visible; }
+        }
+
+        bool save_state = false;
+
+        private void lb_Devices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lb_Devices.SelectedItem == null)
+            {
+                if (gr_Plot.Visibility == Visibility.Visible) { gr_Plot.Visibility = Visibility.Collapsed; save_state = true; }
+                bt_PlotVisible.IsEnabled = false;
+            }
+            else
+            {
+                bt_PlotVisible.IsEnabled = true;
+                if (save_state) { gr_Plot.Visibility = Visibility.Visible; save_state = false; };
+            }
+        }
     }
 }

@@ -123,7 +123,20 @@ namespace Catarina.ViewModel
                     }
                 }
 
-                
+                if (device is Interfaces.IFlowable)
+                {
+                    SucessStep = false;
+                    if (!device.IsConnected)
+                    {
+                        while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
+                        {
+                            try { (device as Interfaces.IFlowable).DisableFlow(); SucessStep = true; }
+                            catch (Exception) { }
+                        }
+                    }
+                }
+
+
                 SucessStep = false;
                 while (!SucessStep && !CancelTesting.IsCancellationRequested && failcounter < FailAvalibleCount + 5)
                 {
