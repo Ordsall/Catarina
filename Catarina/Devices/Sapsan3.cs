@@ -63,14 +63,7 @@ namespace Catarina.Devices
         }
 
 
-        public string Serial
-        {
-            get
-            {
-                try { return device.Settings.p0_SerialNumber; }
-                catch (Exception)  { return null; }
-            }
-        }
+        public string Serial { get; private set; }
 
         public string Type => "Сапсан 3";
 
@@ -129,6 +122,7 @@ namespace Catarina.Devices
         {
             bool b = device.Connect((Settings as SerialSettings).PortName);
             if (!b) { throw new Exception("Невозможно подключится к имитатору"); }
+            Serial = device.Settings.p0_SerialNumber;
         }
 
         public void Disable()

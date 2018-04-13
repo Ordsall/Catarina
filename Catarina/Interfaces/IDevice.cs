@@ -9,9 +9,9 @@ namespace Catarina.Interfaces
     public interface IDevice
     {
 
-        Dictionary<int, double> GetData(IProgress<string> progress = null);
+        IEnumerable<IParameter> GetData(IProgress<string> progress = null);
 
-        Dictionary<string, int> GetHeaders();
+        List<string> GetHeaders();
 
         string SerialNumber { get; }
 
@@ -32,7 +32,7 @@ namespace Catarina.Interfaces
 
     public class ParametersChangedArgs : EventArgs
     {
-        public Dictionary<int, double> Parameters = new Dictionary<int, double>();
+        public List<IParameter> Parameters = new List<IParameter>();
     }
 
     public interface IFlowable
@@ -40,6 +40,8 @@ namespace Catarina.Interfaces
         void EnableFlow();
 
         event EventHandler ParametersChanged;
+
+        List<string> GetFlowHeaders();
 
         void DisableFlow();
     }

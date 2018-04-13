@@ -364,10 +364,10 @@ namespace Catarina.ViewModel
                 if(device != null && device is Interfaces.IFlowable)
                 {
                     EchographData.Clear();
-                    var h = device.GetHeaders();
+                    var h = (device as Interfaces.IFlowable).GetFlowHeaders();
                     foreach (var header in h)
                     {
-                        LineSeries l = new LineSeries() { Title = header.Key, Values = new ChartValues<double>() };
+                        LineSeries l = new LineSeries() { Title = header, Values = new ChartValues<double>() };
                         l.Values.AddRange(Enumerable.Repeat<object>(double.NaN, 150));
                         EchographData.Add(l);
                     }
@@ -391,16 +391,18 @@ namespace Catarina.ViewModel
             }, o => true);
         }
 
-        private void EchographProgress_ProgressChanged(object sender, Dictionary<int, double> e)
+        private void EchographProgress_ProgressChanged(object sender, List<Interfaces.IParameter> e)
         {
-            foreach (var item in e)
+            int i = 0;
+            foreach (Interfaces.DoubleParameter item in e.OfType<Interfaces.DoubleParameter>())
             {
-                EchographData[item.Key].Values.Add(item.Value);
-                EchographData[item.Key].Values.RemoveAt(0);
+                EchographData[i].Values.Add(item.Value);
+                EchographData[i].Values.RemoveAt(0);
+                i++;
             }
         }
 
-        Progress<Dictionary<int, double>> EchographProgress = new Progress<Dictionary<int, double>>();
+        Progress<List<Interfaces.IParameter>> EchographProgress = new Progress<List<Interfaces.IParameter>>();
 
         public SeriesCollection EchographData { get; set; } = new SeriesCollection { };
 
@@ -408,7 +410,7 @@ namespace Catarina.ViewModel
         {
             try
             {
-                IProgress<Dictionary<int, double>> prog = EchographProgress;
+                IProgress<List<Interfaces.IParameter>> prog = EchographProgress;
                 prog.Report((e as Interfaces.ParametersChangedArgs).Parameters);
             }
             catch (Exception) { }           

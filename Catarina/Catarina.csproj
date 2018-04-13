@@ -113,6 +113,7 @@
     <Compile Include="Interfaces\IImitator.cs" />
     <Compile Include="Interfaces\IImitatorFactory.cs" />
     <Compile Include="Interfaces\IDevice.cs" />
+    <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
     <Compile Include="ViewModel\EnvironmentAddMasterModel.cs" />
     <Compile Include="ViewModel\EnvironmentModel.cs" />

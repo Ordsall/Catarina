@@ -120,13 +120,15 @@ namespace Catarina.Devices
             this.Detectors = Detectors;
             Speed = Detectors[7].Speed;
 
-            Dictionary<int, double> ptemp = new Dictionary<int, double>();
+            List<IParameter> ptemp = new List<IParameter>();
 
-            ptemp.Add(0, Detectors[7].Amp);
-            ptemp.Add(1, Detectors[7].Speed);
-            ptemp.Add(2, Detectors[7].Angle);
-            ptemp.Add(3, Detectors[7].Distance);
-      
+            var names = GetFlowHeaders();
+
+            ptemp.Add(new DoubleParameter(names[0], Detectors[7].Amp));
+            ptemp.Add(new DoubleParameter(names[1], Detectors[7].Speed));
+            ptemp.Add(new DoubleParameter(names[2], Detectors[7].Angle));
+            ptemp.Add(new DoubleParameter(names[3], Detectors[7].Distance));
+
 
             ParametersChanged?.Invoke(this, new ParametersChangedArgs() { Parameters = ptemp });
         }
@@ -135,16 +137,7 @@ namespace Catarina.Devices
 
         public event EventHandler ParametersChanged;
 
-        public string SerialNumber
-        {
-            get
-            {
-                string ser = "";
-                try { ser = device.Settings.SerialNumber; }
-                catch (Exception) { ser = null; }
-                return ser;
-            }
-        }
+        public string SerialNumber { get; private set; }
 
         public string Type => DeviceFactory.Type;
 
@@ -160,26 +153,26 @@ namespace Catarina.Devices
             {
                 bool r = device.Connect((Settings as SerialSettings).PortName);
                 if (!r) { throw new Exception("Невозможно подключится к устройству!"); }
+                SerialNumber = device.Settings.SerialNumber;
             }
-            catch (Exception) { throw; }           
+            catch (Exception) { throw; }
         }
 
-       
 
-        public Dictionary<int, double> GetData(IProgress<string> progress = null) //TODO Унаследовать от dict
+
+        IEnumerable<IParameter> IDevice.GetData(IProgress<string> progress)
         {
             if (device.IsConnected)
             {
-                var d = new Dictionary<int, double>();
+                var d = new List<IParameter>();
 
                 progress?.Report("Снятие уровня шума");
 
-                device.GetSpectrum();
-                //d.Add("Спектр сигнала", device.GetSpectrum());
+                var s = GetSpectrum();
 
                 Double noize = (device.Noise[0] + device.Noise[0] + device.Noise[0] + device.Noise[0]) / 4;
 
-                //d.Add("Уровень шума", noize);
+                Double signal = (device.Signal[0] + device.Signal[0] + device.Signal[0] + device.Signal[0]) / 4;
 
                 Olvia.Devices.pheasant.Detector det = new Olvia.Devices.pheasant.Detector();
 
@@ -224,11 +217,13 @@ namespace Catarina.Devices
                 progress?.Report("Выключение потокового режима");
                 device.DisableFlow();
 
-                d.Add(0, det.Amp);
-                d.Add(1, det.Speed);
-                d.Add(2, det.Angle);
-                d.Add(3, det.Distance);
-
+                d.Add(new DoubleParameter(GetHeaders()[0], det.Amp));
+                d.Add(new DoubleParameter(GetHeaders()[1], det.Speed));
+                d.Add(new DoubleParameter(GetHeaders()[2], det.Angle));
+                d.Add(new DoubleParameter(GetHeaders()[3], det.Distance));
+                d.Add(new SpectrumsParameter(GetHeaders()[4], new List<double[]>() { s.ToArray() }));
+                d.Add(new DoubleParameter(GetHeaders()[5], signal));
+                d.Add(new DoubleParameter(GetHeaders()[6], noize));
 
                 return d;
             }
@@ -237,7 +232,7 @@ namespace Catarina.Devices
 
         public void Disconnect()
         {
-            if(device.IsConnected)
+            if (device.IsConnected)
             {
                 device.DisableFlow();
                 device.Disconnect();
@@ -247,6 +242,14 @@ namespace Catarina.Devices
         public void EnableFlow() => device.EnableFlow();
 
         public void DisableFlow() => device.DisableFlow();
+
+        double[] ConvertSpectrum(int Number, double[,] Data)
+        {
+            var d = device.GetSpectrum();
+            double[] tmp = new double[d.GetLength(1)];
+            Buffer.BlockCopy(d, Number * 512, tmp, 0, tmp.Length * sizeof(double));
+            return tmp;
+        }
 
         public IEnumerable<double> GetSpectrum()
         {
@@ -263,9 +266,8 @@ namespace Catarina.Devices
         public double GetNoize() {
             return device.Noise[0]; }
 
-        public Dictionary<string, int> GetHeaders()
-        {
-            return new Dictionary<string, int>() { { "Амплитуда", 0 }, { "Скорость", 1 }, { "Угловая координата", 2 }, { "Расстояние", 3 } };
-        }
+        public List<string> GetHeaders() => new List<string>() { "Амплитуда", "Скорость", "Угловая координата", "Расстояние", "Спектры", "Сигнал", "Шум" };
+
+        public List<string> GetFlowHeaders() => new List<string>() { "Амплитуда", "Скорость", "Угловая координата", "Расстояние" };
     }
 }

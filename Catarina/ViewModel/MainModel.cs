@@ -18,18 +18,12 @@ namespace Catarina.ViewModel
         static Instance()
         {
 
-
-
-
-
-            Devices.Add(new Devices.OctopusFactory(new Interfaces.SerialSettings("COM4")));
+            //Devices.Add(new Devices.OctopusFactory(new Interfaces.SerialSettings("COM4")));
             Devices.Add(new Devices.BPhasantFactory(new Interfaces.SerialSettings("COM4")));
             Devices.Add(new Devices.BOctopustFactory(new Interfaces.SerialSettings("COM4")));
             Devices.Add(new Devices.BOctopusMFactory(new Interfaces.SerialSettings("COM4")));
             Imitators.Add(new Devices.Sapsan3Factory(new Interfaces.SerialSettings("COM3")));
 
-
-            //Test();
 
             if(System.IO.File.Exists(@".\environment.json"))
             {
