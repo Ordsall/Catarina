@@ -69,5 +69,14 @@ namespace Catarina
                 if (save_state) { gr_Plot.Visibility = Visibility.Visible; save_state = false; };
             }
         }
+
+        private void bt_Open_Click(object sender, RoutedEventArgs e)
+        {
+            View.OpenResoults opr = new View.OpenResoults();
+            opr.DataContext = new ViewModel.OpenResoultsModel(Properties.Settings.Default.OutputDirectory);
+            opr.Owner = this;
+            opr.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            opr.ShowDialog();
+        }
     }
 }

@@ -6,10 +6,13 @@
         xmlns:local="clr-namespace:Catarina"
         xmlns:vm="clr-namespace:Catarina.ViewModel"
         xmlns:v="clr-namespace:Catarina.View"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:b="clr-namespace:Lloyd.Shared.Behaviors"
         mc:Ignorable="d"
         Title="{Binding Title}"
-        Height="600" Width="800" Icon="Resources/hot-icon.png">
+        Height="600" Width="800" Icon="Resources/Line-Graph-icon.png">
 
     <Window.Resources>
         <DataTemplate x:Key = "mt">
@@ -92,7 +95,9 @@
         </Grid.RowDefinitions>
         <Menu Grid.Column="0" Grid.Row="0">
             <MenuItem Header="Файл">
-                <MenuItem Header="Выход"/>
+                <MenuItem x:Name="bt_Open" Header="Открыть результат тестирования" Click="bt_Open_Click"/>
+                <Separator/>
+                <MenuItem x:Name="bt_Exit" Header="Выход" Command="{Binding CloseApp}"/>
             </MenuItem>
             <MenuItem Header="Средства">
                 <MenuItem x:Name="mi_EnvConf" Header="Конфигурация оборудования" Click="mi_EnvConf_Click"/>
@@ -133,24 +138,18 @@
                 <VisualBrush Visual="{Binding ElementName=Border1}" />
             </Grid.OpacityMask>
             <Grid.Resources>
-                <Style TargetType="lvc:LineSeries">
-                    <Setter Property="StrokeThickness" Value="1"></Setter>
-                    <Setter Property="Fill" Value="Transparent"></Setter>
-                    <Setter Property="PointGeometrySize" Value="0"></Setter>
-                    <Setter Property="LineSmoothness" Value=".5"></Setter>
-                </Style>
                 <Style TargetType="lvc:Axis">
                     <Setter Property="ShowLabels" Value="False"></Setter>
                     <Setter Property="IsEnabled" Value="True"></Setter>
                 </Style>
             </Grid.Resources>
-            <Border x:Name="Border1" Grid.Row="0" CornerRadius="5" Background="White" Grid.ColumnSpan="2" Grid.RowSpan="5" />
-            <Border Grid.Row="0" Background="White" Grid.ColumnSpan="2" Grid.RowSpan="4" />
-            <lvc:CartesianChart Margin="0, 0, 0, 0" LegendLocation="Top"    Series="{Binding SelectedExperimentModel.ExpirementData}"  Hoverable="False" DisableAnimations="True" Grid.ColumnSpan="2" Grid.RowSpan="4">
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis ShowLabels="True" LabelsRotation="45"></lvc:Axis>
-                </lvc:CartesianChart.AxisY>
-            </lvc:CartesianChart>
+            <Border x:Name="Border1" Grid.Row="0" CornerRadius="5" Background="White" Grid.ColumnSpan="2"  Grid.RowSpan="5" />
+            <Border Grid.Row="0" Background="White" Grid.ColumnSpan="2" Grid.RowSpan="4">
+                <oxy:PlotView Model="{Binding SelectedExperimentModel.ExpirementChartModel}" Margin="0,0,0,0" >
+
+                </oxy:PlotView>
+            </Border>
+            
         </Grid>
 
         <Grid Grid.Row="4">
@@ -165,7 +164,7 @@
             <StatusBar HorizontalContentAlignment="Left" HorizontalAlignment="Left"  Background="Transparent" >
                 <Button x:Name="bt_PlotVisible" BorderThickness="0"  Click="bt_PlotVisible_Click" Background="Transparent" IsEnabled="False">
                     <Grid>
-                        <Image x:Name="im_Exp" Height="22" Source="Resources/Arrow-Updown-icon.png"/>
+                        <Image x:Name="im_Exp" Height="22" Source="Resources/Line-Graph-icon.png"/>
                     </Grid>
                 </Button>
             </StatusBar>

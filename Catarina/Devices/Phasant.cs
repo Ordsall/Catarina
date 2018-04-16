@@ -38,6 +38,8 @@ namespace Catarina.Devices
 
     }
 
+    
+
     [JsonObject(MemberSerialization.OptIn)]
     class BOctopustFactory : Interfaces.IDeviceFactory
     {

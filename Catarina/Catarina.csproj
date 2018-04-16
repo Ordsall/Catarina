@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Creative-Freedom-Free-Vibrant-Line-Graph.ico</ApplicationIcon>
+    <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
@@ -96,6 +96,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFFolderBrowser, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFFolderBrowser.1.0.2\lib\WPFFolderBrowser.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.DataGrid, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
@@ -109,6 +112,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Components\CsvFile.cs" />
+    <Compile Include="Devices\Dummy.cs" />
     <Compile Include="Devices\Octopus.cs" />
     <Compile Include="Devices\Phasant.cs" />
     <Compile Include="Devices\Sapsan3.cs" />
@@ -122,7 +126,9 @@
     <Compile Include="ViewModel\EnvironmentModel.cs" />
     <Compile Include="ViewModel\ExperimentModel.cs" />
     <Compile Include="ViewModel\ExpirementAddMasterModel.cs" />
+    <Compile Include="ViewModel\OpenResoultsModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\ResultViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DeviceSelectView.xaml.cs">
       <DependentUpon>DeviceSelectView.xaml</DependentUpon>
@@ -167,6 +173,13 @@
     <Compile Include="View\Helpers\BoolToVisibilityConverter.cs" />
     <Compile Include="View\Helpers\DialogCloser.cs" />
     <Compile Include="View\Helpers\EnumConverter.cs" />
+    <Compile Include="View\Helpers\UpdateBehaviors.cs" />
+    <Compile Include="View\OpenResoults.xaml.cs">
+      <DependentUpon>OpenResoults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ResultView.xaml.cs">
+      <DependentUpon>ResultView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Spectrometer.xaml.cs">
       <DependentUpon>Spectrometer.xaml</DependentUpon>
     </Compile>
@@ -235,6 +248,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ExperimentAddMaster.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OpenResoults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ResultView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -320,10 +341,15 @@
     <Resource Include="Resources\Line-chart-icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Creative-Freedom-Free-Vibrant-Line-Graph.ico" />
+    <Resource Include="App.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Arrow-Updown-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Line-Graph-icon.png" />
+    <Resource Include="Resources\Science-Minus-Math-icon.png" />
+    <Resource Include="Resources\Science-Plus-Math-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" />

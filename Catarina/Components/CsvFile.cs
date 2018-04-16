@@ -39,10 +39,10 @@ namespace Catarina.Components
                 {
                     string[] string_values = row.Remove(row.Length - 1).Split(';');
                     var dt = DateTime.ParseExact(string_values[0], "dd-MM-yyyy HH.mm.ss", null);
-                    double[] values = new double[string_values.Length-2];
-                    for (int i = 0; i < string_values.Length; i++)
+                    double[] values = new double[string_values.Length-1];
+                    for (int i = 0; i < values.Length; i++)
                     {
-                        try { values[i] = Convert.ToDouble(string_values[i+2]); }
+                        try { values[i] = Convert.ToDouble(string_values[i+1]); }
                         catch (Exception) { values[i] = double.NaN; }
                     }
                     l.Add(dt, values);

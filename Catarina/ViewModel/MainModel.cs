@@ -18,23 +18,33 @@ namespace Catarina.ViewModel
         static Instance()
         {
 
+#if DEBUG
+            Imitators.Add(new Devices.DummyImitatorFactory(new Interfaces.SerialSettings("COM3")));
+            Devices.Add(new Devices.DummyDeviceFactory(new Interfaces.SerialSettings("COM4")));
+#endif
+
             //Devices.Add(new Devices.OctopusFactory(new Interfaces.SerialSettings("COM4")));
             Devices.Add(new Devices.BPhasantFactory(new Interfaces.SerialSettings("COM4")));
             Devices.Add(new Devices.BOctopustFactory(new Interfaces.SerialSettings("COM4")));
             Devices.Add(new Devices.BOctopusMFactory(new Interfaces.SerialSettings("COM4")));
             Imitators.Add(new Devices.Sapsan3Factory(new Interfaces.SerialSettings("COM3")));
 
-
-            if(System.IO.File.Exists(@".\environment.json"))
+            try
             {
-                string json = System.IO.File.ReadAllText(@".\environment.json");
+                if (System.IO.File.Exists(@".\environment.json"))
+                {
+                    string json = System.IO.File.ReadAllText(@".\environment.json");
 
-                var s = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<ViewModel.EnvironmentModel>>(json, new JsonSerializerSettings() {
-                    TypeNameHandling = TypeNameHandling.Auto });
+                    var s = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<ViewModel.EnvironmentModel>>(json, new JsonSerializerSettings()
+                    {
+                        TypeNameHandling = TypeNameHandling.Auto
+                    });
 
-                Environments = s;
+                    Environments = s;
+                }
             }
-
+            catch (Exception) { }
+           
             Environments.CollectionChanged += Environments_CollectionChanged;
         }
 
@@ -85,6 +95,8 @@ namespace Catarina.ViewModel
 
         public ICommand RemoveExperimentModel { get; set; }
 
+        public ICommand CloseApp { get; set; }
+
         public MainModel()
         {
             RemoveExperimentModel = new ViewModel.RelayCommand(o =>
@@ -93,6 +105,13 @@ namespace Catarina.ViewModel
                 Instance.Expirements.Remove(SelectedExperimentModel);
                 SelectedExperimentModel = null;
             }, o => SelectedExperimentModel != null);
+
+            CloseApp = new ViewModel.RelayCommand(o =>
+            {
+                System.Windows.Application.Current.Shutdown();
+            }, o => true);
+
+            
         }
     }
 }

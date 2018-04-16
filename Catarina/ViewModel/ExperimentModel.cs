@@ -1,8 +1,11 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
+﻿//using LiveCharts;
+//using LiveCharts.Wpf;
 using Newtonsoft.Json;
+using OxyPlot;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -49,6 +52,8 @@ namespace Catarina.ViewModel
 
         [JsonProperty()]
         public List<string> Headers { get; set; }
+
+        public string FolderPath { get; set; }
     }
 
     
@@ -64,10 +69,10 @@ namespace Catarina.ViewModel
             var info = new TestInfo()
             {
                 Environment = this.Environment.Title,
-                Device = this.SelectedDevice.DeviceInfo,
+                Device = this.SelectedDevice.Type,
                 FetchSpan = this.FetchSpan,
                 StartTime = this.start_time,
-                Imitator = this.Environment.Imitator.DeviceInfo,
+                Imitator = this.Environment.Imitator.Type,
                 Headers = this.Headers,
                 ImitatorSerial = this.ImitatorSerial,
                 DeviceSerial = this.DeviceSerial,
@@ -77,7 +82,9 @@ namespace Catarina.ViewModel
                 IsTestFinished = IsTestFinished
             };
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(info, Formatting.Indented);
-            System.IO.File.WriteAllText(JsonInfoFile, json);
+            try { System.IO.File.WriteAllText(JsonInfoFile, json); }
+            catch (Exception) { }
+
         }
 
         string FinishCause = "";
@@ -132,7 +139,7 @@ namespace Catarina.ViewModel
             imitator = Environment.Imitator.Build();
             device = SelectedDevice.Build();
 
-            ExpirementData.Clear();
+            //ExpirementData.Clear();
 
             FetchProgress.ProgressChanged += FetchProgress_ProgressChanged;
             DataProgress.ProgressChanged += DataProgress_ProgressChanged;
@@ -145,9 +152,39 @@ namespace Catarina.ViewModel
             }, o => true);
 
             updateTimer.Tick += UpdateTimer_Tick;
-            updateTimer.Interval = TimeSpan.FromSeconds(1);
+            updateTimer.Interval = TimeSpan.FromMilliseconds(400);
             lastMeasurment = DateTime.Now;
             updateTimer.Start();
+
+            ExpirementChartModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis() {
+                Font = "Consolas",
+                IsAxisVisible = true,
+                IsPanEnabled = true,
+                FontSize = 10,
+                Key = "Время",
+                IsZoomEnabled = true,
+                MajorGridlineThickness = 1,
+                MajorGridlineStyle = LineStyle.Dot,
+                MajorGridlineColor = OxyColors.LightGray,
+            });
+
+            ExpirementChartModel.Axes.Add(new OxyPlot.Axes.LinearAxis() {
+                Font = "Consolas",
+                IsPanEnabled = false,
+                MaximumPadding = 1,
+                MinimumPadding = 1,
+                Angle = -45,
+                FontSize = 10,
+                Key = "Значение",
+                AbsoluteMaximum = 200,
+                AbsoluteMinimum = -100,
+                MajorStep = 50,
+                IsZoomEnabled = false,
+                MajorGridlineThickness = 1,
+                MajorGridlineStyle = LineStyle.Dot,
+                MajorGridlineColor = OxyColors.LightGray,
+            });
+                
         }
 
         DateTime lastMeasurment = DateTime.Now;
@@ -167,7 +204,7 @@ namespace Catarina.ViewModel
 
         bool IsFetching = false;
 
-        System.Windows.Threading.DispatcherTimer updateTimer = new System.Windows.Threading.DispatcherTimer();
+        System.Windows.Threading.DispatcherTimer updateTimer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.Render);
 
         DateTime start_time;
 
@@ -179,23 +216,28 @@ namespace Catarina.ViewModel
 
         private void DataProgress_ProgressChanged(object sender, List<Interfaces.IParameter> e)
         {
-            if(!FilesCreated) { CreateExperimentFiles();  }
+            var wrt = DateTime.Now;
+
+            if (!FilesCreated) { CreateExperimentFiles();  }
 
             int i = 0;
             foreach (Interfaces.DoubleParameter item in e.OfType<Interfaces.DoubleParameter>())
             {
                 if (!Headers.Contains(item.Name)) { Headers.Add(item.Name); }
-                var ser = ExpirementData.Where(val => val.Title == item.Name).DefaultIfEmpty(null).FirstOrDefault();
+                var ser = ExpirementChartModel.Series.Where(val => val.Title == item.Name).OfType<LineSeries>().DefaultIfEmpty(null).FirstOrDefault();
                 if (ser == null)
                 {
-                    ser = new LineSeries() { Title = item.Name, Values = new ChartValues<double>() };
-                    ExpirementData.Add(ser);
+                    ser = new LineSeries { XAxisKey = "Время",  YAxisKey = "Значение", StrokeThickness = 1, MarkerSize = 3, CanTrackerInterpolatePoints = true, Title = item.Name, Smooth = false  };
+                    ExpirementChartModel.Series.Add(ser);
                 }
-                if (ser != null) { ser.Values.Add(item.Value); }
+                if (ser != null) { ser.Points.Add(new DataPoint(OxyPlot.Axes.DateTimeAxis.ToDouble(wrt), item.Value)); }
                 i++;
+                
             }
 
-            var wrt = DateTime.Now;
+            ExpirementChartModel.InvalidatePlot(true);
+
+           
 
             dataFile.WriteRow(wrt,
             e.Where(val => val is Interfaces.DoubleParameter)
@@ -209,7 +251,13 @@ namespace Catarina.ViewModel
             MeasCount++;
         }
 
-        public SeriesCollection ExpirementData { get; set; } = new SeriesCollection { };
+
+        public OxyPlot.PlotModel ExpirementChartModel { get; private set; } = new OxyPlot.PlotModel()
+        {
+            IsLegendVisible = false, 
+            PlotAreaBorderThickness = new OxyThickness(0,0,0,0),
+            Padding = new OxyThickness(0, 3, 0, 0),
+        };
 
         public string State { get; set; }
 
@@ -249,8 +297,8 @@ namespace Catarina.ViewModel
                             message_progress?.Report("Имитатор подключен");
                             SucessStep = true;
                         }
-                        catch (Exception) { message_progress?.Report("Ошибка подключения к имитатору"); }
-                        System.Threading.Thread.Sleep(500);
+                        catch (Exception) { message_progress?.Report("Ошибка подключения к имитатору"); System.Threading.Thread.Sleep(500); }
+                    
                         trycount++;
                     }
                 }
@@ -267,8 +315,7 @@ namespace Catarina.ViewModel
                         imitator.Distance = 10;
                         SucessStep = true;
                     }
-                    catch (Exception) { message_progress?.Report("Ошибка установки параметров имитации"); }
-                    System.Threading.Thread.Sleep(500);
+                    catch (Exception) { message_progress?.Report("Ошибка установки параметров имитации"); System.Threading.Thread.Sleep(500); }
                     trycount++;
                 }
 
@@ -285,8 +332,7 @@ namespace Catarina.ViewModel
                             message_progress?.Report("Устройство подключено");
                             SucessStep = true;
                         }
-                        catch (Exception) { message_progress?.Report("Подключение к устройству не удалось"); }
-                        System.Threading.Thread.Sleep(500);
+                        catch (Exception) { message_progress?.Report("Подключение к устройству не удалось"); System.Threading.Thread.Sleep(500); }
                         trycount++;
                     }
                 }
@@ -310,8 +356,7 @@ namespace Catarina.ViewModel
                         data.Report(datat.ToList());
                         SucessStep = true;
                     }
-                    catch (Exception) { }
-                    System.Threading.Thread.Sleep(500);
+                    catch (Exception) { System.Threading.Thread.Sleep(500); }
                     trycount++;
                 }
 
@@ -360,8 +405,8 @@ namespace Catarina.ViewModel
 
         public void Dispose()
         {
-            Task.Factory.StartNew(() => { FinishTest("Завершено пользователем"); });
-
+            var t = Task.Factory.StartNew(() => { FinishTest("Завершено пользователем"); });
+            t.Wait();
             CancelTestingSource.Cancel();
             updateTimer.Stop();
             disconnectAllIfConnected();

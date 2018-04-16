@@ -65,7 +65,7 @@ namespace Catarina.Devices
 
         public string Serial { get; private set; }
 
-        public string Type => "Сапсан 3";
+        public string Type => sapsan3Factory.Type;
 
         public ISettings Settings { get; private set; }
 
