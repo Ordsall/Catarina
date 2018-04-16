@@ -37,12 +37,13 @@ namespace Catarina.View
                     if(point != null)
                     {
                         var dt = OxyPlot.Axes.DateTimeAxis.ToDateTime(point.DataPoint.X);
-                        { }
+                        (this.DataContext as ViewModel.ResultViewModel).SelectedSpectrumPoint = dt;
+                        return;
                     }
                 }
                 
             }
-            
+            (this.DataContext as ViewModel.ResultViewModel).SelectedSpectrumPoint = null;
         }
     }
 }

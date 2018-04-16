@@ -17,7 +17,7 @@
     </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -31,6 +31,69 @@
 
             <Border x:Name="Border1" Grid.Row="0" CornerRadius="5" Background="White" Grid.ColumnSpan="3"  Grid.RowSpan="5" />
             <Border Grid.Row="0" Background="White" Grid.ColumnSpan="3" Grid.RowSpan="4"/>
+
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="270"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="270"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Border Height="55" Width="55" Margin="5" Grid.Column="0" Grid.Row="0" BorderThickness="1" BorderBrush="Gray" Background="LightSteelBlue" CornerRadius="5">
+                    <Label Content="{Binding TestInformation.EnvironmentNumber}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontFamily="Consolas"/>
+                </Border>
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="{Binding TestInformation.Environment}" FontFamily="Consolas" FontWeight="Bold" Padding="2" Grid.Row="1" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="2"  >
+                        <Label Content="Имитатор:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.Device}" Padding="2"/>
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.DeviceSerial}" Padding="2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3"  >
+                        <Label Content="Модуль:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.Imitator}" Padding="2"/>
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.ImitatorSerial}" Padding="2"/>
+                    </StackPanel>
+                </Grid>
+                <Separator Grid.Column="1" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                <Separator Grid.Column="3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                <Grid Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1"  >
+                        <Label Content="Дата и время начала теста:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.StartTime, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}" Padding="2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2"  >
+                        <Label Content="Дата и время окончания теста:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.EndTime, StringFormat=\{0:dd.MM.yy HH:mm:ss\}}" Padding="2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3"  >
+                        <Label Content="Причина завершения:" FontFamily="Consolas" Padding="2" />
+                        <Label FontFamily="Consolas" Content="{Binding TestInformation.FinishCause}" Padding="2"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+
         </Grid>
         <Grid Margin="5" Grid.Row="1">
             <Grid.Effect>

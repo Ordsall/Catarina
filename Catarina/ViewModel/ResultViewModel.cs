@@ -1,4 +1,5 @@
 ﻿using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,48 @@ namespace Catarina.ViewModel
     public class ResultViewModel : ViewModelBase
     {
         public ViewModel.TestInfo TestInformation { get; private set; }
+
+        DateTime? selectedSpectrumPoint = null;
+
+        public DateTime? SelectedSpectrumPoint
+        {
+            get => selectedSpectrumPoint;
+            set
+            {
+                selectedSpectrumPoint = value;
+                OnPropertyChanged(nameof(SelectedSpectrumPoint));
+                if (value != null)
+                {
+                    try
+                    {
+                        var spec_a = Spectrums.First(val => val.Key >= (DateTime)value);
+                        var spec_b = Spectrums.Last(val => val.Key <= (DateTime)value);
+                        KeyValuePair<DateTime, double[]> spec_c = spec_a;
+                        if ((DateTime)value == spec_a.Key) { spec_c = spec_a; }
+                        else if ((DateTime)value == spec_b.Key) { spec_c = spec_b; }
+                        else if (Math.Abs(((DateTime)value - spec_a.Key).Ticks) > Math.Abs(((DateTime)value - spec_b.Key).Ticks)) { spec_c = spec_b; }
+                        else if (Math.Abs(((DateTime)value - spec_a.Key).Ticks) <= Math.Abs(((DateTime)value - spec_b.Key).Ticks)) { spec_c = spec_a; }
+
+                        int i = 0;
+                        var ser = SpectrumChartModel.Series.Where(val => val.Title == "Спектр").OfType<LineSeries>().DefaultIfEmpty(null).FirstOrDefault();
+
+                        ser.Points.Clear();
+                        foreach (var sp in spec_c.Value)
+                        {
+                            ser.Points.Add(new DataPoint(i, sp));
+                            i++;
+                        }
+                        lineAnnotationSelectedSpectrum.X = OxyPlot.Axes.DateTimeAxis.ToDouble((DateTime)value);
+
+                        ParametersChartModel.InvalidatePlot(true);
+                        SpectrumChartModel.InvalidatePlot(true);
+                    }
+                    catch (Exception) { }
+               
+
+                }
+            }
+        }
 
         public OxyPlot.PlotModel ParametersChartModel { get; private set; } = new OxyPlot.PlotModel()
         {
@@ -90,6 +133,8 @@ namespace Catarina.ViewModel
             {
                 var ser = SpectrumChartModel.Series.Where(val => val.Title == "Спектр").OfType<LineSeries>().DefaultIfEmpty(null).FirstOrDefault();
                 int i = 0;
+                Spectrums = e.SpectrumPoints;
+                lineAnnotationSelectedSpectrum.X = OxyPlot.Axes.DateTimeAxis.ToDouble(e.SpectrumPoints.FirstOrDefault().Key);
                 foreach (var sp in e.SpectrumPoints.FirstOrDefault().Value)
                 {
                     ser.Points.Add(new DataPoint(i, sp));
@@ -98,6 +143,8 @@ namespace Catarina.ViewModel
                 SpectrumChartModel.InvalidatePlot(true);
             }
         }
+
+        public Dictionary<DateTime, double[]> Spectrums = new Dictionary<DateTime, double[]>();
 
         public ResultViewModel(ViewModel.TestInfo Item)
         {
@@ -183,9 +230,25 @@ namespace Catarina.ViewModel
             var spec = new LineSeries {XAxisKey = "Отсчет", YAxisKey = "Амплитуда", StrokeThickness = 1, MarkerSize = 3, CanTrackerInterpolatePoints = true, Title = "Спектр", Smooth = false };
             SpectrumChartModel.Series.Add(spec);
 
+            lineAnnotationSelectedSpectrum = new LineAnnotation()
+            {
+                Type = LineAnnotationType.Vertical,
+                Color = OxyColors.SteelBlue,
+                LineStyle = LineStyle.DashDashDot,
+                StrokeThickness = 1,
+                Tag = "SelectedSpectrum",
+            };
+
+            ParametersChartModel.Annotations.Add(lineAnnotationSelectedSpectrum);
+
+
+
 
         }
 
-       
+        LineAnnotation lineAnnotationSelectedSpectrum = null;
+
+
+
     }
 }

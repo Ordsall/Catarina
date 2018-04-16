@@ -51,6 +51,9 @@ namespace Catarina.ViewModel
         public string Environment { get; set; }
 
         [JsonProperty()]
+        public int EnvironmentNumber { get; set; }
+
+        [JsonProperty()]
         public List<string> Headers { get; set; }
 
         public string FolderPath { get; set; }
@@ -79,7 +82,8 @@ namespace Catarina.ViewModel
                 FinishCause = FinishCause,
                 MasurmentsCount = MeasCount,
                 EndTime = FinishTime,
-                IsTestFinished = IsTestFinished
+                IsTestFinished = IsTestFinished,
+                EnvironmentNumber = Environment.Number
             };
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(info, Formatting.Indented);
             try { System.IO.File.WriteAllText(JsonInfoFile, json); }
@@ -312,7 +316,7 @@ namespace Catarina.ViewModel
                     {
                         imitator.Speed = 60;
                         imitator.Direction = Direction.Income;
-                        imitator.Distance = 10;
+                        imitator.Distance = 30;
                         SucessStep = true;
                     }
                     catch (Exception) { message_progress?.Report("Ошибка установки параметров имитации"); System.Threading.Thread.Sleep(500); }
