@@ -24,17 +24,17 @@ publish:
 
   script:
     - echo "Comperss..."
-    - 'cmd /Q /C "D:\GitLab-Runner\scripts\packaging_zip.cmd" ./Catarina/bin/Release/* build.zip'
+    - 'cmd /Q /C "D:\GitLab-Runner\scripts\packaging_zip.cmd" ./Catarina/bin/Release/* build_%CI_COMMIT_SHA:~0,8%.zip'
     - ''
     - echo "Publishing..."
-    - 'cmd /Q /C "D:\GitLab-Runner\scripts\publish_ftp.cmd" ./build.zip Catarina/%CI_COMMIT_REF_NAME%/'
+    - 'cmd /Q /C "D:\GitLab-Runner\scripts\publish_ftp.cmd" ./build_%CI_COMMIT_SHA:~0,8%.zip Catarina/%CI_COMMIT_REF_NAME%/'
   tags: 
     - C#
     - Windows
 
   artifacts:
     paths:
-    - build.zip
+    - build_%CI_COMMIT_SHA:~0,8%.zip
     expire_in: 1 week
 
   dependencies:
