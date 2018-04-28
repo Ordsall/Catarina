@@ -6,15 +6,27 @@ using System.Threading.Tasks;
 
 namespace Catarina.Components
 {
+    /// <summary>
+    /// Csv file class
+    /// </summary>
     public class CsvFile
     {
         string fileName = string.Empty;
 
+        /// <summary>
+        /// Csv file class
+        /// </summary>
+        /// <param name="FileName">File name or path</param>
         public CsvFile(string FileName)
         {
             fileName = FileName;
         }
 
+        /// <summary>
+        /// Write row to csw file
+        /// </summary>
+        /// <param name="dateTime">DateTime value of values measure</param>
+        /// <param name="values">Measured values</param>
         public void WriteRow(DateTime dateTime, params double[] values)
         {
             lock (fileName)
@@ -27,6 +39,10 @@ namespace Catarina.Components
             }
         }
 
+        /// <summary>
+        /// Read all rows in csv files
+        /// </summary>
+        /// <returns>Dict of readed values</returns>
         public Dictionary<DateTime, double[]> ReadAll()
         {
             var l = new Dictionary<DateTime, double[]>();
